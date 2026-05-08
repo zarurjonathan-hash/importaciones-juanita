@@ -2644,207 +2644,157 @@ function renderSKUs() {
 // =============================================
 // DOCUMENTOS IMPRIMIBLES
 // =============================================
+function abrirVentanaImpresion(contenido) {
+  const win = window.open('', '_blank');
+  const estilosBase = 'body{font-family:Arial,sans-serif;margin:20px;color:#1F2917;font-size:13px}'
+    + 'table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}'
+    + 'th{background:#5C6B3A;color:white;padding:6px 8px;text-align:left}'
+    + 'td{padding:6px 8px;border-bottom:1px solid #ddd}'
+    + '.logo{width:48px;height:48px;background:#5C6B3A;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;vertical-align:middle;margin-right:12px}'
+    + '.folio-rojo{font-size:22px;font-weight:800;color:#C0392B}'
+    + '.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}'
+    + '.etapa-ok{color:#5C6B3A;font-weight:700}.etapa-pend{color:#999}'
+    + '.firmas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:40px}'
+    + '.firma{border-top:2px solid #333;padding-top:8px;text-align:center;font-size:12px;color:#666}'
+    + '@media print{.no-print{display:none}}';
+  win.document.open();
+  win.document.write('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">');
+  win.document.write('<style>' + estilosBase + '</style></head><body>');
+  win.document.write(contenido);
+  win.document.write('<div class="no-print" style="margin-top:20px;text-align:center"><button onclick="window.print()" style="padding:10px 30px;background:#5C6B3A;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer">🖨️ Imprimir</button></div>');
+  win.document.write('</body></html>');
+  win.document.close();
+}
+
 async function imprimirHojaViajera(pedidoId) {
   const { data: p } = await sb.from('pedidos').select('*,clientes(*),usuarios(nombre)').eq('id', pedidoId).single();
   const { data: etapas } = await sb.from('etapas_pedido').select('*,usuarios(nombre)').eq('pedido_id', pedidoId).order('creado_en');
   const { data: rollos } = await sb.from('packing_list_rollos').select('*').eq('pedido_id', pedidoId);
   const ruta = RUTAS_ETAPAS[p.tipo] || [];
 
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>
-  <title>Hoja Viajera ${p.folio}</title>
-  <style>
-    body{font-family:Arial,sans-serif;margin:20px;color:#1F2917;font-size:13px}
-    .header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #5C6B3A;padding-bottom:12px;margin-bottom:16px}
-    .logo{width:48px;height:48px;background:#5C6B3A;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
-    .folio{font-size:24px;font-weight:800;color:#C0392B}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-    .item label{font-size:10px;color:#666;text-transform:uppercase;display:block}
-    .item span{font-weight:700}
-    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
-    th{background:#5C6B3A;color:white;padding:6px 8px;text-align:left}
-    td{padding:6px 8px;border-bottom:1px solid #ddd}
-    .etapa-ok{color:#5C6B3A;font-weight:700}
-    .etapa-pend{color:#999}
-    .firmas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:30px}
-    .firma{border-top:2px solid #333;padding-top:8px;text-align:center;font-size:12px;color:#666}
-    @media print{button{display:none}}
-  </style></head><body>
-  <div class="header">
-    <div class="logo">IJ</div>
-    <div>
-      <div style="font-size:11px;color:#666">Importaciones Juanita · Toluca, Estado de México</div>
-      <div class="folio">${p.folio}</div>
-    </div>
-    <div style="margin-left:auto;text-align:right">
-      <div style="font-size:11px;color:#666">HOJA VIAJERA</div>
-      <div style="font-weight:700">${new Date().toLocaleDateString('es-MX')}</div>
-    </div>
-  </div>
-  <div class="grid">
-    <div class="item"><label>Cliente</label><span>${p.clientes?.nombre||'—'}</span></div>
-    <div class="item"><label>Tipo de pedido</label><span>${p.tipo} — ${TIPOS_PEDIDO[p.tipo]}</span></div>
-    <div class="item"><label>Tela</label><span>${p.tela_tipo||'—'} ${p.tela_ancho?p.tela_ancho+'cm':''}</span></div>
-    <div class="item"><label>Lado sublimación</label><span>${p.lado_sublimacion||'—'}</span></div>
-    <div class="item"><label>Fecha comprometida</label><span>${p.fecha_comprometida||'—'}</span></div>
-    <div class="item"><label>Estado</label><span>${p.estado}</span></div>
-    <div class="item"><label>Etapa actual</label><span>${p.etapa_actual}</span></div>
-    <div class="item"><label>Vendedor</label><span>${p.usuarios?.nombre||'—'}</span></div>
-  </div>
-  ${p.observaciones ? `<div style="background:#f5f6f2;padding:10px;border-radius:6px;margin-bottom:12px"><strong>Observaciones:</strong> ${p.observaciones}</div>` : ''}
-  ${rollos?.length ? `
-    <strong>Packing List — Rollos de tela:</strong>
-    <table><thead><tr><th>#Rollo</th><th>Metros reales</th><th>Ancho (cm)</th><th>Lote</th></tr></thead>
-    <tbody>${rollos.map(r=>`<tr><td>${r.numero_rollo}</td><td>${r.metros_reales}</td><td>${r.ancho_cm}</td><td>${r.lote_entrada||'—'}</td></tr>`).join('')}</tbody></table>
-  ` : ''}
-  <strong>Ruta de producción:</strong>
-  <table><thead><tr><th>Etapa</th><th>Estado</th><th>Completado por</th><th>Fecha</th></tr></thead>
-  <tbody>
-    ${ruta.map(e => {
-      const comp = (etapas||[]).find(et => et.etapa === e);
-      return `<tr><td>${e}</td><td class="${comp?'etapa-ok':'etapa-pend'}">${comp?'✓ Completada':'Pendiente'}</td><td>${comp?comp.usuarios?.nombre||'—':'—'}</td><td>${comp?new Date(comp.completado_en).toLocaleDateString('es-MX'):'—'}</td></tr>`;
-    }).join('')}
-  </tbody></table>
-  <div class="firmas">
-    <div class="firma">Entregué conforme<br/><br/><br/>Nombre y firma</div>
-    <div class="firma">Recibí conforme<br/><br/><br/>Nombre y firma</div>
-    <div class="firma">Autorizado por<br/><br/><br/>Jonathan Zarur / Director</div>
-  </div>
-  <scr'+'ipt>window.print();</scr'+'ipt>
-  </body></html>`;
-
-  const win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
+  let html = '';
+  html += '<div style="display:flex;align-items:center;border-bottom:3px solid #5C6B3A;padding-bottom:12px;margin-bottom:16px">';
+  html += '<span class="logo">IJ</span>';
+  html += '<div><div style="font-size:11px;color:#666">Importaciones Juanita · Toluca, Edo. Méx.</div>';
+  html += '<div class="folio-rojo">' + (p.folio||'') + '</div></div>';
+  html += '<div style="margin-left:auto;text-align:right"><strong>HOJA VIAJERA</strong><br/>' + new Date().toLocaleDateString('es-MX') + '</div></div>';
+  html += '<div class="grid2">';
+  html += '<div><small>CLIENTE</small><br/><strong>' + (p.clientes?.nombre||'—') + '</strong></div>';
+  html += '<div><small>TIPO</small><br/><strong>' + (p.tipo||'') + ' — ' + (TIPOS_PEDIDO[p.tipo]||'') + '</strong></div>';
+  html += '<div><small>TELA</small><br/><strong>' + (p.tela_tipo||'—') + (p.tela_ancho?' '+p.tela_ancho+'cm':'') + '</strong></div>';
+  html += '<div><small>LADO SUBLIMACIÓN</small><br/><strong>' + (p.lado_sublimacion||'—') + '</strong></div>';
+  html += '<div><small>ENTREGA</small><br/><strong>' + (p.fecha_comprometida||'—') + '</strong></div>';
+  html += '<div><small>ESTADO</small><br/><strong>' + (p.estado||'') + '</strong></div>';
+  html += '<div><small>ETAPA ACTUAL</small><br/><strong>' + (p.etapa_actual||'') + '</strong></div>';
+  html += '<div><small>VENDEDOR</small><br/><strong>' + (p.usuarios?.nombre||'—') + '</strong></div>';
+  html += '</div>';
+  if (p.observaciones) {
+    html += '<div style="background:#f5f6f2;padding:10px;border-radius:6px;margin-bottom:12px"><strong>Observaciones:</strong> ' + p.observaciones + '</div>';
+  }
+  if (rollos && rollos.length) {
+    html += '<strong>Packing List — Rollos de tela:</strong>';
+    html += '<table><thead><tr><th>#Rollo</th><th>Metros reales</th><th>Ancho (cm)</th><th>Lote</th></tr></thead><tbody>';
+    rollos.forEach(function(r) {
+      html += '<tr><td>' + r.numero_rollo + '</td><td>' + r.metros_reales + '</td><td>' + r.ancho_cm + '</td><td>' + (r.lote_entrada||'—') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  }
+  html += '<strong>Ruta de producción:</strong>';
+  html += '<table><thead><tr><th>Etapa</th><th>Estado</th><th>Completado por</th><th>Fecha</th></tr></thead><tbody>';
+  ruta.forEach(function(e) {
+    const comp = (etapas||[]).find(function(et){ return et.etapa === e; });
+    html += '<tr><td>' + e + '</td>';
+    html += '<td class="' + (comp?'etapa-ok':'etapa-pend') + '">' + (comp?'✓ Completada':'Pendiente') + '</td>';
+    html += '<td>' + (comp ? (comp.usuarios?.nombre||'—') : '—') + '</td>';
+    html += '<td>' + (comp ? new Date(comp.completado_en).toLocaleDateString('es-MX') : '—') + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  html += '<div class="firmas">';
+  html += '<div class="firma">Entregué conforme<br/><br/><br/>Nombre y firma</div>';
+  html += '<div class="firma">Recibí conforme<br/><br/><br/>Nombre y firma</div>';
+  html += '<div class="firma">Autorizado por<br/><br/><br/>Jonathan Zarur / Director</div>';
+  html += '</div>';
+  abrirVentanaImpresion(html);
 }
 
 async function imprimirNotaSalida(pedidoId) {
   const { data: p } = await sb.from('pedidos').select('*,clientes(*),usuarios(nombre)').eq('id', pedidoId).single();
   const { data: rollos } = await sb.from('packing_list_rollos').select('*').eq('pedido_id', pedidoId);
-
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><title>Nota Salida ${p.folio}</title>
-  <style>
-    body{font-family:Arial,sans-serif;margin:20px;color:#1F2917;font-size:13px}
-    .header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
-    .logo{width:48px;height:48px;background:#5C6B3A;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
-    .titulo{border:3px solid #5C6B3A;padding:6px 20px;font-size:20px;font-weight:800}
-    .folio-rojo{font-size:24px;font-weight:800;color:#C0392B}
-    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
-    th{background:#5C6B3A;color:white;padding:6px 8px;text-align:left}
-    td{padding:6px 8px;border-bottom:1px solid #ddd}
-    .firmas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:30px}
-    .firma{border-top:2px solid #333;padding-top:8px;text-align:center;font-size:12px;color:#666}
-    @media print{button{display:none}}
-  </style></head><body>
-  <div class="header">
-    <div class="logo">IJ</div>
-    <div class="titulo">NOTA DE SALIDA</div>
-    <div style="margin-left:16px"><div style="font-size:11px;color:#666">Folio:</div><div class="folio-rojo">${p.folio}</div></div>
-    <div style="margin-left:auto;text-align:right"><div style="font-size:11px;color:#666">Fecha:</div><div style="font-weight:700">${new Date().toLocaleDateString('es-MX')}</div></div>
-  </div>
-  <div style="margin-bottom:12px"><strong>FACTURAR A:</strong> ${p.clientes?.nombre||'—'}</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;font-size:12px">
-    <div>Vendedor: <strong>${p.usuarios?.nombre||'—'}</strong></div>
-    <div>☑ Compra &nbsp;&nbsp; ☐ Devolución &nbsp;&nbsp; ☐ Muestra</div>
-  </div>
-  ${rollos?.length ? `
-    <table><thead><tr><th>#Rollo</th><th>Metros</th><th>Ancho</th><th>Descripción</th></tr></thead>
-    <tbody>${rollos.map(r=>`<tr><td>${r.numero_rollo}</td><td>${r.metros_reales} m</td><td>${r.ancho_cm} cm</td><td>${p.tela_tipo||'Tela sublimada'}</td></tr>`).join('')}</tbody></table>
-  ` : `<table><thead><tr><th>Descripción</th><th>U/M</th><th>Cantidad</th></tr></thead><tbody><tr><td>${p.tela_tipo||'Producto'} — ${TIPOS_PEDIDO[p.tipo]}</td><td>${p.unidad_medida||'—'}</td><td>—</td></tr></tbody></table>`}
-  <div style="text-align:right;margin:16px 0">
-    <div>Total: <strong>—</strong></div>
-  </div>
-  <div class="firmas">
-    <div class="firma">Entregué conforme<br/><br/><br/>Nombre y firma</div>
-    <div class="firma">Recibí conforme<br/><br/><br/>Nombre y firma</div>
-    <div class="firma">Autorizado por<br/><br/><br/>Jonathan Zarur / Director</div>
-  </div>
-  <scr'+'ipt>window.print();</scr'+'ipt>
-  </body></html>`;
-
-  const win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
+  let html = '';
+  html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">';
+  html += '<span class="logo">IJ</span>';
+  html += '<div style="border:3px solid #5C6B3A;padding:6px 20px;font-size:20px;font-weight:800">NOTA DE SALIDA</div>';
+  html += '<div style="margin-left:16px"><div style="font-size:11px;color:#666">Folio:</div><div class="folio-rojo">' + (p.folio||'') + '</div></div>';
+  html += '<div style="margin-left:auto;text-align:right"><div style="font-size:11px;color:#666">Fecha:</div><div style="font-weight:700">' + new Date().toLocaleDateString('es-MX') + '</div></div>';
+  html += '</div>';
+  html += '<div style="margin-bottom:12px"><strong>FACTURAR A:</strong> ' + (p.clientes?.nombre||'—') + '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;font-size:12px">';
+  html += '<div>Vendedor: <strong>' + (p.usuarios?.nombre||'—') + '</strong></div>';
+  html += '<div>&#9745; Compra &nbsp;&nbsp; &#9744; Devolución &nbsp;&nbsp; &#9744; Muestra</div></div>';
+  if (rollos && rollos.length) {
+    html += '<table><thead><tr><th>#Rollo</th><th>Metros</th><th>Ancho</th><th>Descripción</th></tr></thead><tbody>';
+    rollos.forEach(function(r) {
+      html += '<tr><td>' + r.numero_rollo + '</td><td>' + r.metros_reales + ' m</td><td>' + r.ancho_cm + ' cm</td><td>' + (p.tela_tipo||'Tela sublimada') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  } else {
+    html += '<table><thead><tr><th>Descripción</th><th>U/M</th><th>Cantidad</th></tr></thead><tbody>';
+    html += '<tr><td>' + (p.tela_tipo||'Producto') + ' — ' + (TIPOS_PEDIDO[p.tipo]||'') + '</td><td>' + (p.unidad_medida||'—') + '</td><td>—</td></tr>';
+    html += '</tbody></table>';
+  }
+  html += '<div style="text-align:right;margin:16px 0">Total: <strong>—</strong></div>';
+  html += '<div class="firmas">';
+  html += '<div class="firma">Entregué conforme<br/><br/><br/>Nombre y firma</div>';
+  html += '<div class="firma">Recibí conforme<br/><br/><br/>Nombre y firma</div>';
+  html += '<div class="firma">Autorizado por<br/><br/><br/>Jonathan Zarur / Director</div>';
+  html += '</div>';
+  abrirVentanaImpresion(html);
 }
 
 async function imprimirOrdenConfeccion(pedidoId) {
   const { data: p } = await sb.from('pedidos').select('*,clientes(*)').eq('id', pedidoId).single();
   const { data: disenos } = await sb.from('pedido_disenos').select('*').eq('pedido_id', pedidoId);
   const { data: tallas } = await sb.from('pedido_tallas_v2').select('*').eq('pedido_id', pedidoId);
-
-  // Calcular tallas usadas
-  const tallasUsadas = [...new Set((tallas||[]).map(t => t.talla))];
-
-  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><title>Orden Confección ${p.folio}</title>
-  <style>
-    body{font-family:Arial,sans-serif;margin:20px;color:#1F2917;font-size:12px}
-    .header-azul{background:#5C6B3A;color:white;padding:12px 20px;margin-bottom:16px;border-radius:6px}
-    .header-azul h1{font-size:18px;margin:0}
-    .info-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;font-size:11px}
-    .info-item label{color:#666;display:block}
-    .info-item span{font-weight:700}
-    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:11px}
-    th{background:#5C6B3A;color:white;padding:5px 6px;text-align:center}
-    td{padding:5px 6px;border:1px solid #ddd;text-align:center}
-    td:first-child{text-align:left}
-    .firmas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:30px}
-    .firma{border-top:2px solid #333;padding-top:8px;text-align:center;font-size:11px;color:#666}
-    @media print{button{display:none}}
-  </style></head><body>
-  <div class="header-azul"><h1>ORDEN DE CONFECCIÓN — ${p.folio}</h1></div>
-  <div class="info-bar">
-    <div class="info-item"><label>Fecha</label><span>${new Date().toLocaleDateString('es-MX')}</span></div>
-    <div class="info-item"><label>Cliente</label><span>${p.clientes?.nombre||'—'}</span></div>
-    <div class="info-item"><label>Tela</label><span>${p.tela_tipo||'—'}</span></div>
-    <div class="info-item"><label>Entrega</label><span>${p.fecha_comprometida||'—'}</span></div>
-  </div>
-  <table>
-    <thead><tr>
-      <th>SKU/Diseño</th>
-      ${tallasUsadas.map(t=>`<th>${t}</th>`).join('')}
-      <th>TOTAL</th>
-    </tr></thead>
-    <tbody>
-      ${(disenos||[]).map((d,i) => {
-        const tallasDis = (tallas||[]).filter(t => t.diseno_id === d.id);
-        const tallaMap = {};
-        tallasDis.forEach(t => tallaMap[t.talla] = t.cantidad);
-        const total = tallasDis.reduce((s,t) => s+t.cantidad, 0);
-        return `<tr>
-          <td>Diseño ${i+1}</td>
-          ${tallasUsadas.map(t=>`<td>${tallaMap[t]||0}</td>`).join('')}
-          <td><strong>${total}</strong></td>
-        </tr>`;
-      }).join('')}
-      <tr style="background:#f5f6f2;font-weight:700">
-        <td>TOTALES</td>
-        ${tallasUsadas.map(t => {
-          const tot = (tallas||[]).filter(tl => tl.talla === t).reduce((s,tl) => s+tl.cantidad, 0);
-          return `<td>${tot}</td>`;
-        }).join('')}
-        <td>${(tallas||[]).reduce((s,t)=>s+t.cantidad,0)}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div style="margin-top:20px;font-size:12px;font-weight:700">Entrega de insumos:</div>
-  <table style="margin-top:8px">
-    <thead><tr><th>Material</th><th>Cantidad</th><th>Recibí conforme</th></tr></thead>
-    <tbody>
-      <tr><td>Prendas en liso</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
-      <tr><td>Tela sublimada</td><td></td><td></td></tr>
-      <tr><td>Otros insumos</td><td></td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="firmas">
-    <div class="firma">Entregué<br/><br/><br/>IJ / Producción</div>
-    <div class="firma">Recibí<br/><br/><br/>Maquilero</div>
-    <div class="firma">Autorizado<br/><br/><br/>Jonathan Zarur</div>
-  </div>
-  <scr'+'ipt>window.print();</scr'+'ipt>
-  </body></html>`;
-
-  const win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
+  const tallasUsadas = [...new Set((tallas||[]).map(function(t){ return t.talla; }))];
+  let html = '';
+  html += '<div style="background:#5C6B3A;color:white;padding:12px 20px;margin-bottom:16px;border-radius:6px">';
+  html += '<h1 style="font-size:18px;margin:0">ORDEN DE CONFECCIÓN — ' + (p.folio||'') + '</h1></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;font-size:11px">';
+  html += '<div><small>Fecha</small><br/><strong>' + new Date().toLocaleDateString('es-MX') + '</strong></div>';
+  html += '<div><small>Cliente</small><br/><strong>' + (p.clientes?.nombre||'—') + '</strong></div>';
+  html += '<div><small>Tela</small><br/><strong>' + (p.tela_tipo||'—') + '</strong></div>';
+  html += '<div><small>Entrega</small><br/><strong>' + (p.fecha_comprometida||'—') + '</strong></div></div>';
+  html += '<table><thead><tr><th style="text-align:left">SKU/Diseño</th>';
+  tallasUsadas.forEach(function(t){ html += '<th style="text-align:center">' + t + '</th>'; });
+  html += '<th style="text-align:center">TOTAL</th></tr></thead><tbody>';
+  (disenos||[]).forEach(function(d, i) {
+    const tallasDis = (tallas||[]).filter(function(t){ return t.diseno_id === d.id; });
+    const tallaMap = {};
+    tallasDis.forEach(function(t){ tallaMap[t.talla] = t.cantidad; });
+    const total = tallasDis.reduce(function(s,t){ return s + t.cantidad; }, 0);
+    html += '<tr><td>Diseño ' + (i+1) + '</td>';
+    tallasUsadas.forEach(function(t){ html += '<td style="text-align:center">' + (tallaMap[t]||0) + '</td>'; });
+    html += '<td style="text-align:center"><strong>' + total + '</strong></td></tr>';
+  });
+  html += '<tr style="background:#f5f6f2;font-weight:700"><td>TOTALES</td>';
+  tallasUsadas.forEach(function(t) {
+    const tot = (tallas||[]).filter(function(tl){ return tl.talla === t; }).reduce(function(s,tl){ return s+tl.cantidad; }, 0);
+    html += '<td style="text-align:center">' + tot + '</td>';
+  });
+  html += '<td style="text-align:center">' + (tallas||[]).reduce(function(s,t){ return s+t.cantidad; },0) + '</td></tr>';
+  html += '</tbody></table>';
+  html += '<div style="margin-top:20px;font-size:12px;font-weight:700">Entrega de insumos:</div>';
+  html += '<table style="margin-top:8px"><thead><tr><th>Material</th><th>Cantidad</th><th>Recibí conforme</th></tr></thead><tbody>';
+  html += '<tr><td>Prendas en liso</td><td></td><td></td></tr>';
+  html += '<tr><td>Tela sublimada</td><td></td><td></td></tr>';
+  html += '<tr><td>Otros insumos</td><td></td><td></td></tr>';
+  html += '</tbody></table>';
+  html += '<div class="firmas">';
+  html += '<div class="firma">Entregué<br/><br/><br/>IJ / Producción</div>';
+  html += '<div class="firma">Recibí<br/><br/><br/>Maquilero</div>';
+  html += '<div class="firma">Autorizado<br/><br/><br/>Jonathan Zarur</div>';
+  html += '</div>';
+  abrirVentanaImpresion(html);
 }
 
 // =============================================
