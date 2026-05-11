@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Importaciones Juanita</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--primary:#5C6B3A;--primary-light:#EEF2E6;--primary-hover:#4A5630;--sidebar-bg:#1C2410;--sidebar-hover:#2A3418;--sidebar-active:#3A4820;--sidebar-text:#C8D4A8;--sidebar-muted:#7A8F60;--success:#6B8F3A;--bg:#F5F6F2;--card-bg:#FFFFFF;--border:#DDE3D0;--text:#1F2917;--text-muted:#6B7A55;--text-light:#9AAA80;--danger:#C0392B;--danger-light:#FDECEA;--warning:#D4860A;--warning-light:#FEF3E2;--info:#3A7A8F;--info-light:#E8F4F7;--shadow:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 16px rgba(0,0,0,0.08);--shadow-lg:0 8px 32px rgba(0,0,0,0.14);--radius:12px;--radius-sm:8px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--sidebar-bg);}
+.login-card{background:#fff;border-radius:20px;padding:40px;width:360px;box-shadow:var(--shadow-lg);}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.logo-box{width:44px;height:44px;background:var(--primary);border-radius:11px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
+.login-brand{font-size:16px;font-weight:800;}
+.login-brand span{color:var(--primary);}
+.pin-display{display:flex;gap:14px;justify-content:center;margin:14px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);transition:all 0.2s;}
+.pin-dot.filled{background:var(--primary);border-color:var(--primary);}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:10px 0;}
+.pin-btn{padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:19px;font-weight:800;cursor:pointer;background:white;transition:all 0.15s;}
+.pin-btn:hover{border-color:var(--primary);background:var(--primary-light);}
+.pin-btn.zero{grid-column:2;}
+.pin-btn.del{background:var(--danger-light);border-color:var(--danger);color:var(--danger);}
+.form-group{margin-bottom:13px;}
+.form-group label{display:block;font-weight:700;font-size:11px;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.form-control{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);background:var(--bg);transition:border-color 0.2s;}
+.form-control:focus{outline:none;border-color:var(--primary);background:white;}
+select.form-control{appearance:auto;}
+textarea.form-control{resize:vertical;min-height:75px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 15px;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-primary{background:var(--primary);color:white;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-success{background:var(--success);color:white;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-warning{background:var(--warning);color:white;}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--border);}
+.btn-outline:hover{border-color:var(--primary);background:var(--primary-light);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:none;}
+.btn-ghost:hover{background:var(--bg);color:var(--text);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.login-error{color:var(--danger);font-size:12px;margin-top:7px;display:none;text-align:center;}
+#app{display:none;height:100vh;}
+.app-layout{display:flex;height:100vh;}
+.sidebar{width:220px;background:var(--sidebar-bg);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--sidebar-active);border-radius:4px;}
+.sidebar-header{padding:15px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.sidebar-logo-box{width:30px;height:30px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:11px;flex-shrink:0;}
+.sidebar-brand{color:white;font-weight:800;font-size:11px;line-height:1.2;}
+.sidebar-brand small{color:var(--sidebar-muted);font-size:9px;font-weight:500;display:block;}
+.sidebar-nav{flex:1;padding:7px 4px;}
+.nav-grupo-label{color:var(--sidebar-muted);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:9px 8px 2px;}
+.nav-item{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;cursor:pointer;color:var(--sidebar-text);font-size:11px;font-weight:600;transition:all 0.15s;}
+.nav-item:hover{background:var(--sidebar-hover);}
+.nav-item.active{background:var(--sidebar-active);color:white;}
+.nav-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0;}
+.sidebar-footer{padding:7px 4px;border-top:1px solid rgba(255,255,255,0.06);}
+.user-info{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background 0.15s;}
+.user-info:hover{background:var(--sidebar-hover);}
+.user-avatar{width:26px;height:26px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:10px;flex-shrink:0;}
+.user-name{color:white;font-size:11px;font-weight:700;}
+.user-rol{color:var(--sidebar-muted);font-size:9px;}
+.btn-logout{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--sidebar-muted);font-size:13px;padding:3px;border-radius:3px;}
+.btn-logout:hover{color:var(--danger);}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.main-header{background:white;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+.header-title{font-size:16px;font-weight:800;}
+.header-actions{display:flex;align-items:center;gap:7px;}
+.area-modulo{flex:1;overflow-y:auto;padding:20px;}
+.area-modulo::-webkit-scrollbar{width:5px;}
+.area-modulo::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.card{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow);}
+.metric-card{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--border);padding:15px;box-shadow:var(--shadow);cursor:pointer;transition:all 0.2s;}
+.metric-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.metric-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
+.metric-icon.green{background:var(--primary-light);}
+.metric-icon.orange{background:var(--warning-light);}
+.metric-icon.red{background:var(--danger-light);}
+.metric-icon.blue{background:var(--info-light);}
+.metric-value{font-size:27px;font-weight:800;line-height:1;margin-bottom:2px;}
+.metric-label{color:var(--text-muted);font-size:11px;font-weight:700;}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.dashboard-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;}
+.section-title{font-size:13px;font-weight:800;margin-bottom:12px;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{text-align:left;padding:7px 10px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap;}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tbody tr:hover{background:var(--bg);cursor:pointer;}
+tbody tr:last-child td{border-bottom:none;}
+.folio-badge{font-weight:800;font-size:11px;color:var(--primary);background:var(--primary-light);padding:2px 7px;border-radius:20px;}
+.tipo-badge{font-weight:700;font-size:10px;padding:2px 7px;border-radius:20px;}
+.tipo-SUB{background:#EEF2E6;color:#4A5630;}
+.tipo-PTS{background:#E8F4F7;color:#1A5F70;}
+.tipo-MUE{background:#FEF3E2;color:#8B5E00;}
+.tipo-VT{background:#F3E8FF;color:#6B35A8;}
+.tipo-PI{background:#FDE8E8;color:#8B1A1A;}
+.estado-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.estado-pendiente{background:#F3F4F6;color:#6B7280;}
+.estado-en_produccion{background:var(--info-light);color:var(--info);}
+.estado-listo{background:#EEF2E6;color:var(--success);}
+.estado-retrasado{background:var(--danger-light);color:var(--danger);}
+.estado-entregado{background:#F0FDF4;color:#166534;}
+.estado-pausado{background:var(--warning-light);color:var(--warning);}
+.estado-cancelado{background:#F3F4F6;color:#9CA3AF;}
+.etapa-chip{font-size:10px;font-weight:700;color:var(--text-muted);background:var(--bg);padding:2px 6px;border-radius:4px;border:1px solid var(--border);}
+.modulo-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.modulo-header h2{font-size:18px;font-weight:800;}
+.modulo-header p{color:var(--text-muted);font-size:12px;margin-top:2px;}
+.filtros-bar{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;align-items:center;}
+.filtro-chip{padding:5px 12px;border-radius:20px;border:2px solid var(--border);font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:white;color:var(--text-muted);transition:all 0.15s;}
+.filtro-chip.active{border-color:var(--primary);background:var(--primary-light);color:var(--primary);}
+.search-box{display:flex;align-items:center;gap:6px;background:white;border:2px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;flex:1;max-width:270px;}
+.search-box input{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:12px;color:var(--text);width:100%;background:transparent;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.form-full{grid-column:1/-1;}
+.form-section{border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:12px;background:white;}
+.form-section-title{font-size:10px;font-weight:800;color:var(--primary);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;}
+.form-hint{font-size:10px;color:var(--text-light);margin-top:3px;}
+.tipo-selector{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:13px;}
+.tipo-opt{border:2px solid var(--border);border-radius:var(--radius);padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.15s;background:white;}
+.tipo-opt:hover{border-color:var(--primary);}
+.tipo-opt.selected{border-color:var(--primary);background:var(--primary-light);}
+.tipo-opt .tipo-code{font-size:14px;font-weight:800;color:var(--primary);}
+.tipo-opt .tipo-name{font-size:9px;color:var(--text-muted);margin-top:2px;font-weight:600;}
+.diseno-row{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;background:var(--bg);}
+.diseno-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.diseno-num{font-weight:800;font-size:11px;color:var(--primary);}
+.btn-remove{background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;padding:0;}
+.img-placeholder{width:70px;height:70px;border-radius:7px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--bg);cursor:pointer;flex-shrink:0;}
+.img-placeholder:hover{border-color:var(--primary);background:var(--primary-light);}
+.file-input-hidden{display:none;}
+.tallas-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.talla-input-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.talla-label{font-size:9px;font-weight:700;color:var(--text-muted);}
+.talla-qty{width:42px;text-align:center;padding:4px 2px;border:2px solid var(--border);border-radius:5px;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;}
+.talla-qty:focus{outline:none;border-color:var(--primary);}
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:none;backdrop-filter:blur(2px);}
+.panel-overlay.open{display:block;}
+.panel-lateral{position:fixed;right:0;top:0;bottom:0;width:480px;background:white;z-index:101;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s ease;}
+.panel-lateral.open{transform:translateX(0);}
+.panel-header{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.panel-folio{font-size:18px;font-weight:800;color:var(--primary);}
+.panel-body{flex:1;overflow-y:auto;padding:16px 19px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.panel-footer{padding:12px 19px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;}
+.btn-close-panel{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted);padding:3px;border-radius:5px;}
+.btn-close-panel:hover{background:var(--bg);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px;}
+.info-item label{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:2px;}
+.info-item span{font-size:12px;font-weight:600;}
+.timeline-item{display:flex;gap:10px;margin-bottom:2px;}
+.timeline-icon-wrap{display:flex;flex-direction:column;align-items:center;}
+.timeline-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;border:2px solid var(--border);background:white;}
+.timeline-icon.done{background:var(--primary-light);border-color:var(--primary);}
+.timeline-icon.current{background:var(--warning-light);border-color:var(--warning);}
+.timeline-line{width:2px;flex:1;background:var(--border);margin:2px auto;min-height:12px;}
+.timeline-line.done{background:var(--primary);}
+.timeline-content{padding:2px 0 12px;}
+.timeline-etapa{font-size:12px;font-weight:700;}
+.timeline-meta{font-size:10px;color:var(--text-muted);margin-top:1px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;width:540px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow:hidden;}
+.modal-lg{width:700px;}
+.modal-header{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-title{font-size:15px;font-weight:800;}
+.modal-body{padding:17px 19px;overflow-y:auto;flex:1;}
+.modal-body::-webkit-scrollbar{width:3px;}
+.modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.modal-footer{padding:12px 19px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px;flex-shrink:0;}
+.btn-close-modal{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted);padding:3px;border-radius:5px;}
+.btn-close-modal:hover{background:var(--bg);}
+.alert{padding:8px 12px;border-radius:var(--radius-sm);margin-bottom:12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.alert-success{background:var(--primary-light);color:var(--primary);border:1px solid #C8D4A8;}
+.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid #FBBCBA;}
+.alert-warning{background:var(--warning-light);color:var(--warning);border:1px solid #FCD9A0;}
+.alert-info{background:var(--info-light);color:var(--info);border:1px solid #BAD9E4;}
+.empty-state{text-align:center;padding:44px 20px;color:var(--text-muted);}
+.empty-state .empty-icon{font-size:42px;margin-bottom:11px;opacity:0.5;}
+.empty-state h3{font-size:14px;font-weight:800;margin-bottom:5px;color:var(--text);}
+.loading{text-align:center;padding:32px;color:var(--text-muted);font-size:13px;}
+.spinner{display:inline-block;width:19px;height:19px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.toggle-wrap{display:flex;align-items:center;gap:7px;}
+.toggle{position:relative;display:inline-block;width:38px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:20px;transition:0.2s;}
+.toggle-slider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.2s;}
+.toggle input:checked+.toggle-slider{background:var(--primary);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px);}
+.toggle-label{font-size:12px;font-weight:600;}
+.crud-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.crud-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:15px;transition:all 0.15s;}
+.crud-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);}
+.crud-avatar{width:40px;height:40px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--primary);margin-bottom:8px;}
+.crud-nombre{font-size:13px;font-weight:800;margin-bottom:3px;}
+.crud-meta{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+.crud-actions{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.rol-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--primary-light);color:var(--primary);}
+.disenos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.diseno-card{background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.15s;cursor:pointer;}
+.diseno-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.diseno-img-box{width:100%;height:130px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:38px;overflow:hidden;}
+.diseno-img-box img{width:100%;height:100%;object-fit:cover;}
+.diseno-info{padding:8px;}
+.diseno-sku{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;}
+.diseno-nombre{font-size:11px;font-weight:700;margin-top:2px;}
+.cola-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;display:flex;align-items:flex-start;gap:10px;}
+.cola-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md);}
+.cola-prioridad{width:4px;height:48px;border-radius:3px;flex-shrink:0;margin-top:2px;}
+.cola-prioridad.p1{background:var(--danger);}
+.cola-prioridad.p2{background:var(--warning);}
+.cola-prioridad.p3{background:var(--success);}
+.cola-folio{font-weight:800;color:var(--primary);font-size:12px;}
+.cola-cliente{color:var(--text-muted);font-size:11px;margin-top:2px;}
+.cola-chip{font-size:9px;font-weight:700;padding:2px 5px;border-radius:7px;background:var(--bg);color:var(--text-muted);border:1px solid var(--border);}
+.dias-ok{color:var(--success);font-size:10px;font-weight:700;}
+.dias-warn{color:var(--warning);font-size:10px;font-weight:700;}
+.dias-late{color:var(--danger);font-size:10px;font-weight:700;}
+.imp-card{background:white;border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.imp-header{background:var(--primary);color:white;padding:10px 15px;display:flex;align-items:center;justify-content:space-between;}
+.imp-body{padding:13px 15px;}
+.imp-dis-row{display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border);}
+.imp-dis-row:last-child{border-bottom:none;}
+.imp-dis-img{width:64px;height:64px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;}
+.imp-dis-img img{width:100%;height:100%;object-fit:cover;}
+.progress-bar{height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--primary);border-radius:4px;}
+.cal-banner{background:linear-gradient(135deg,var(--primary),var(--primary-hover));border-radius:var(--radius);padding:17px;color:white;margin-bottom:15px;display:flex;align-items:center;gap:13px;}
+.cal-temp{font-size:42px;font-weight:800;line-height:1;}
+@media(max-width:1024px){.metrics-grid{grid-template-columns:repeat(2,1fr);}.dashboard-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){.sidebar{width:180px;}.crud-grid{grid-template-columns:1fr 1fr;}.panel-lateral{width:100%;}.tipo-selector{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-box">IJ</div>
+      <div><div class="login-brand">Importaciones <span>Juanita</span></div><div style="font-size:10px;color:var(--text-muted);font-weight:600">Toluca, Estado de México</div></div>
+    </div>
+    <div class="form-group"><label>Usuario</label><select class="form-control" id="login-usuario"><option value="">— Cargando... —</option></select></div>
+    <div class="pin-display"><div class="pin-dot" id="dot0"></div><div class="pin-dot" id="dot1"></div><div class="pin-dot" id="dot2"></div><div class="pin-dot" id="dot3"></div></div>
+    <div class="pin-grid">
+      <button class="pin-btn" onclick="pinPress('1')">1</button><button class="pin-btn" onclick="pinPress('2')">2</button><button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button><button class="pin-btn" onclick="pinPress('5')">5</button><button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button><button class="pin-btn" onclick="pinPress('8')">8</button><button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn zero" onclick="pinPress('0')">0</button><button class="pin-btn del" onclick="pinDel()">&#9003;</button>
+    </div>
+    <div id="login-error" class="login-error"></div>
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:7px" onclick="loginDirecto()">&#128273; Acceso directo</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-box">IJ</div>
+        <div class="sidebar-brand">Importaciones Juanita<small>Producción</small></div>
+      </div>
+      <div class="sidebar-nav" id="sidebar-nav"></div>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="avatar-ini">J</div>
+          <div><div class="user-name" id="usr-nom">Jonathan</div><div class="user-rol" id="usr-rol">director</div></div>
+          <button class="btn-logout" onclick="cerrarSesion()">&#9211;</button>
+        </div>
+      </div>
+    </nav>
+    <div class="main-area">
+      <header class="main-header">
+        <div class="header-title" id="header-title">Dashboard</div>
+        <div class="header-actions"><button class="btn btn-primary btn-sm" onclick="cambiarModulo('nuevo-pedido')">&#10133; Nuevo pedido</button></div>
+      </header>
+      <div class="area-modulo" id="area-modulo"><div class="loading"><span class="spinner"></span>Cargando...</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-overlay" id="panel-overlay" onclick="cerrarPanel()"></div>
+<div class="panel-lateral" id="panel-lateral">
+  <div class="panel-header">
+    <div><div class="panel-folio" id="panel-folio">—</div><div id="panel-sub" style="margin-top:3px"></div></div>
+    <button class="btn-close-panel" onclick="cerrarPanel()">&#10005;</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+  <div class="panel-footer" id="panel-footer"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
+    <div class="modal-header"><div class="modal-title" id="modal-title"></div><button class="btn-close-modal" onclick="cerrarModal()">&#10005;</button></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+/* ============ PARTE 1: CONFIG + CONSTANTES + UTILIDADES + LOGIN ============ */
+var SB_URL='https://uekhgozfimhqvarmziyo.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVla2hnb3pmaW1ocXZhcm16aXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODY3MDgsImV4cCI6MjA5Mzc2MjcwOH0.wHGBJWZTQXfAhaypK5v4jFHVWWkI3cmX--EPeyKU5BA';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var APP={user:null,mod:'dashboard',pid:null};
+var PIN='';
+var TALLAS=['XXS','XS','S','M','L','XL','XXL','XXXL','T3','T4','T5','T6','T7','T8','Única'];
+var TIPOS={SUB:'Sublimación',PTS:'Prenda Terminada',MUE:'Muestra',VT:'Venta de Tela',PI:'Papel de Impresión'};
+var RUTAS={
+  SUB:['Captura','Aprobación','Almacén Entrada','Impresión','Calandra','Calidad','Almacén Salida'],
+  PTS:['Captura','Aprobación','Muestra','Almacén Entrada','Impresión','Calandra','Corte','Costura','Calidad','Almacén Salida'],
+  MUE:['Captura','Aprobación','Almacén Entrada','Impresión','Aprobación Cliente','Almacén Salida'],
+  VT:['Captura','Aprobación','Almacén Salida'],
+  PI:['Captura','Aprobación','Almacén Salida']
+};
+var ROL_MOD={
+  director:['dashboard','seguimiento','reportes','clientes','usuarios','nuevo-pedido','todos-pedidos','historial','almacen-entrada','impresion','calandra','corte-planeacion','costura','maquila','almacen-salida','bordado','disenos','rollos-papel','cfg-calandra','inv-liso','picking-list','skus'],
+  vendedor:['dashboard','nuevo-pedido','todos-pedidos','clientes','seguimiento'],
+  impresor:['impresion','rollos-papel'],
+  calandra:['calandra'],
+  corte:['corte-planeacion'],
+  costura:['costura'],
+  almacen:['almacen-entrada','almacen-salida','todos-pedidos'],
+  chofer:['almacen-salida']
+};
+var NAV=[
+  {g:'GENERAL',items:[{id:'dashboard',ic:'📊',t:'Dashboard'},{id:'seguimiento',ic:'🔍',t:'Seguimiento'},{id:'reportes',ic:'📈',t:'Reportes'},{id:'clientes',ic:'👥',t:'Clientes'},{id:'usuarios',ic:'👤',t:'Usuarios'}]},
+  {g:'PEDIDOS',items:[{id:'nuevo-pedido',ic:'➕',t:'Nuevo pedido'},{id:'todos-pedidos',ic:'📦',t:'Todos los pedidos'},{id:'historial',ic:'✅',t:'Historial'}]},
+  {g:'PRODUCCIÓN',items:[{id:'almacen-entrada',ic:'🏭',t:'Almacén Entrada'},{id:'impresion',ic:'🖨️',t:'Impresión'},{id:'calandra',ic:'🔥',t:'Calandra'},{id:'corte-planeacion',ic:'✂️',t:'Corte'},{id:'costura',ic:'🧵',t:'Costura'},{id:'maquila',ic:'🔧',t:'Maquila'},{id:'almacen-salida',ic:'📤',t:'Almacén Salida'},{id:'bordado',ic:'🪡',t:'Bordado'}]},
+  {g:'MARKETPLACE',items:[{id:'inv-liso',ic:'👕',t:'Inventario liso'},{id:'picking-list',ic:'📋',t:'Picking list'},{id:'skus',ic:'🏷️',t:'SKUs'}]},
+  {g:'CATÁLOGOS',items:[{id:'disenos',ic:'🎨',t:'Diseños'},{id:'rollos-papel',ic:'🧻',t:'Rollos papel'}]},
+  {g:'CONFIG',items:[{id:'cfg-calandra',ic:'⚙️',t:'Config calandra'}]}
+];
+var TITS={dashboard:'Dashboard',seguimiento:'Seguimiento',reportes:'Reportes',clientes:'Clientes',usuarios:'Usuarios','nuevo-pedido':'Nuevo pedido','todos-pedidos':'Todos los pedidos',historial:'Historial','almacen-entrada':'Almacén Entrada',impresion:'Cola de Impresión',calandra:'Cola de Calandra','corte-planeacion':'Corte',costura:'Cola de Costura',maquila:'Maquila','almacen-salida':'Almacén Salida',bordado:'Bordado','inv-liso':'Inventario Liso','picking-list':'Picking List',skus:'SKUs',disenos:'Catálogo Diseños','rollos-papel':'Rollos de Papel','cfg-calandra':'Config Calandra'};
+
+/* --- UTILIDADES --- */
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ff(f){if(!f)return'—';return new Date(f+'T12:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'});}
+function dr(f){if(!f)return null;var h=new Date();h.setHours(0,0,0,0);return Math.ceil((new Date(f+'T12:00:00')-h)/86400000);}
+function cd(f){var d=dr(f);if(d===null)return'—';if(d<0)return'<span class="dias-late">⚠️ '+Math.abs(d)+'d tarde</span>';if(d===0)return'<span class="dias-warn">🔥 Hoy</span>';if(d<=2)return'<span class="dias-warn">⏰ '+d+'d</span>';return'<span class="dias-ok">📅 '+d+'d</span>';}
+function ini(n){if(!n)return'?';return n.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();}
+function gv(id){var el=document.getElementById(id);return el?el.value:'';}
+function gf(id){return parseFloat(gv(id))||0;}
+function toast(msg,tipo,t){
+  tipo=tipo||'success';t=t||3500;
+  var d=document.createElement('div');d.className='alert alert-'+tipo;
+  d.style.cssText='position:fixed;top:18px;right:18px;z-index:9999;min-width:240px;box-shadow:var(--shadow-lg)';
+  d.textContent=(tipo==='success'?'✅ ':tipo==='danger'?'❌ ':'⚠️ ')+msg;
+  document.body.appendChild(d);setTimeout(function(){d.remove();},t);
+}
+function abrirModal(tit,body,foot,lg){
+  document.getElementById('modal-title').textContent=tit;
+  document.getElementById('modal-body').innerHTML=body;
+  document.getElementById('modal-footer').innerHTML=foot||'';
+  document.getElementById('modal-box').className='modal'+(lg?' modal-lg':'');
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function cerrarModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function cerrarPanel(){document.getElementById('panel-overlay').classList.remove('open');document.getElementById('panel-lateral').classList.remove('open');}
+
+/* --- LOGIN PIN --- */
+async function cargarUsrs(){
+  var s=document.getElementById('login-usuario');
+  var r=await sb.from('usuarios').select('id,nombre,rol').eq('activo',true).order('nombre');
+  s.innerHTML='<option value="">— Selecciona tu nombre —</option>';
+  (r.data||[]).forEach(function(u){s.innerHTML+='<option value="'+u.id+'">'+esc(u.nombre)+' ('+esc(u.rol)+')</option>';});
+}
+function pinPress(d){if(PIN.length>=4)return;PIN+=d;updDots();if(PIN.length===4)setTimeout(checkPin,200);}
+function pinDel(){PIN=PIN.slice(0,-1);updDots();document.getElementById('login-error').style.display='none';}
+function updDots(){for(var i=0;i<4;i++){var dot=document.getElementById('dot'+i);if(dot)dot.classList.toggle('filled',i<PIN.length);}}
+async function checkPin(){
+  var uid=gv('login-usuario');var err=document.getElementById('login-error');
+  if(!uid){err.style.display='block';err.textContent='Selecciona tu usuario';PIN='';updDots();return;}
+  var r=await sb.from('usuarios').select('*').eq('id',uid).single();var u=r.data;
+  if(!u){err.style.display='block';err.textContent='Usuario no encontrado';PIN='';updDots();return;}
+  if(!u.pin_configurado||!u.pin){await sb.from('usuarios').update({pin:PIN,pin_configurado:true}).eq('id',uid);startApp(u);return;}
+  if(u.pin===PIN)startApp(u);
+  else{err.style.display='block';err.textContent='❌ PIN incorrecto';PIN='';updDots();}
+}
+async function loginDirecto(){
+  var r=await sb.from('usuarios').select('*').eq('email','jonzarur@gmail.com').single();
+  if(r.data)startApp(r.data);else toast('Ejecuta el SQL primero','danger');
+}
+function startApp(u){
+  APP.user=u;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('usr-nom').textContent=u.nombre.split(' ')[0];
+  document.getElementById('usr-rol').textContent=u.rol;
+  document.getElementById('avatar-ini').textContent=ini(u.nombre);
+  PIN='';updDots();buildNav();cambiarModulo('dashboard');
+}
+function cerrarSesion(){
+  APP.user=null;PIN='';updDots();
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-usuario').value='';
+  document.getElementById('login-error').style.display='none';
+}
+function buildNav(){
+  var rol=APP.user?APP.user.rol:'director';var pm=ROL_MOD[rol]||[];var h='';
+  NAV.forEach(function(g){
+    var items=g.items.filter(function(i){return pm.indexOf(i.id)>=0;});
+    if(!items.length)return;
+    h+='<div class="nav-grupo-label">'+g.g+'</div>';
+    items.forEach(function(it){h+='<div class="nav-item" id="nav-'+it.id+'" onclick="cambiarModulo(\''+it.id+'\')"><span class="nav-icon">'+it.ic+'</span>'+esc(it.t)+'</div>';});
+  });
+  document.getElementById('sidebar-nav').innerHTML=h;
+}
+/* ============ PARTE 2: NAVEGACIÓN + DASHBOARD + PANEL + ETAPAS ============ */
+
+function cambiarModulo(id){
+  APP.mod=id;
+  document.getElementById('header-title').textContent=TITS[id]||id;
+  document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');});
+  var nav=document.getElementById('nav-'+id);if(nav)nav.classList.add('active');
+  cerrarPanel();
+  document.getElementById('area-modulo').innerHTML='<div class="loading"><span class="spinner"></span>Cargando...</div>';
+  switch(id){
+    case 'dashboard':rDash();break;
+    case 'seguimiento':rSeg();break;
+    case 'reportes':rRep();break;
+    case 'clientes':rClientes();break;
+    case 'usuarios':rUsuarios();break;
+    case 'nuevo-pedido':rNuevoPed();break;
+    case 'todos-pedidos':rTodos(false);break;
+    case 'historial':rTodos(true);break;
+    case 'almacen-entrada':rCola('Almacén Entrada');break;
+    case 'impresion':rImpresion();break;
+    case 'calandra':rCola('Calandra');break;
+    case 'corte-planeacion':rCola('Corte');break;
+    case 'costura':rCola('Costura');break;
+    case 'almacen-salida':rCola('Almacén Salida');break;
+    case 'maquila':rMaquila();break;
+    case 'bordado':rCola('Bordado');break;
+    case 'disenos':rDis();break;
+    case 'rollos-papel':rRollos();break;
+    case 'cfg-calandra':rCfgCal();break;
+    case 'inv-liso':case 'picking-list':case 'skus':rFase2();break;
+    default:document.getElementById('area-modulo').innerHTML='<div class="empty-state"><div class="empty-icon">🚧</div><h3>En construcción</h3></div>';
+  }
+}
+
+/* --- DASHBOARD --- */
+async function rDash(){
+  var area=document.getElementById('area-modulo');
+  var u=APP.user;var h=new Date().getHours();
+  var sal=h<12?'☀️ Buenos días':h<18?'👋 Buenas tardes':'🌙 Buenas noches';
+  var r=await Promise.all([
+    sb.from('pedidos').select('id,estado,fecha_comprometida,folio,tipo,clientes(nombre)').neq('estado','entregado').neq('estado','cancelado'),
+    sb.from('pedidos').select('id',{count:'exact',head:true}).eq('estado','entregado')
+  ]);
+  var act=r[0].data||[];var entC=r[1].count||0;
+  var ret=act.filter(function(p){return p.estado==='retrasado';});
+  var prod=act.filter(function(p){return p.estado==='en_produccion';});
+  var urg=act.filter(function(p){var d=dr(p.fecha_comprometida);return d!==null&&d<=2&&d>=0;});
+  area.innerHTML='<div style="margin-bottom:16px"><h1 style="font-size:21px;font-weight:800">'+sal+', '+esc(u?u.nombre.split(' ')[0]:'Jonathan')+' 👋</h1>'
+    +'<p style="color:var(--text-muted);font-size:12px">'+new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</p></div>'
+    +'<div class="metrics-grid">'
+    +'<div class="metric-card" onclick="detMetrica(\'activos\')"><div class="metric-icon green">📦</div><div class="metric-value">'+act.length+'</div><div class="metric-label">Pedidos activos</div></div>'
+    +'<div class="metric-card" onclick="detMetrica(\'produccion\')"><div class="metric-icon orange">⚙️</div><div class="metric-value">'+prod.length+'</div><div class="metric-label">En producción</div></div>'
+    +'<div class="metric-card" onclick="detMetrica(\'retrasados\')"><div class="metric-icon red">⚠️</div><div class="metric-value">'+ret.length+'</div><div class="metric-label">Retrasados</div></div>'
+    +'<div class="metric-card" onclick="detMetrica(\'entregados\')"><div class="metric-icon blue">✅</div><div class="metric-value">'+entC+'</div><div class="metric-label">Entregados</div></div>'
+    +'</div>'
+    +'<div class="dashboard-grid">'
+    +'<div class="card"><div class="section-title">📦 Pedidos recientes</div><div id="dash-r"><div class="loading"><span class="spinner"></span></div></div></div>'
+    +'<div>'
+    +(urg.length?'<div class="card" style="margin-bottom:12px;border-color:var(--warning)"><div class="section-title">🔥 Urgentes</div>'
+      +urg.map(function(p){return '<div class="cola-card" onclick="abrirPanel(\''+p.id+'\')" style="margin-bottom:7px">'
+        +'<div class="cola-prioridad p1"></div>'
+        +'<div style="flex:1"><div class="cola-folio">'+esc(p.folio)+'</div>'
+        +'<div class="cola-cliente">'+esc(p.clientes?p.clientes.nombre:'—')+'</div></div>'
+        +cd(p.fecha_comprometida)+'</div>';}).join('')+'</div>':'')
+    +'<div class="card"><div class="section-title">⚡ Acceso rápido</div>'
+    +'<div style="display:flex;flex-direction:column;gap:7px">'
+    +'<button class="btn btn-primary" onclick="cambiarModulo(\'nuevo-pedido\')">➕ Nuevo pedido</button>'
+    +'<button class="btn btn-outline" onclick="cambiarModulo(\'todos-pedidos\')">📦 Ver todos</button>'
+    +'<button class="btn btn-outline" onclick="cambiarModulo(\'impresion\')">🖨️ Impresión</button>'
+    +'</div></div></div></div>';
+  var r2=await sb.from('pedidos').select('id,folio,tipo,estado,etapa_actual,fecha_comprometida,clientes(nombre)')
+    .neq('estado','entregado').neq('estado','cancelado').order('creado_en',{ascending:false}).limit(8);
+  var dR=document.getElementById('dash-r');if(!dR)return;
+  var rec=r2.data||[];
+  if(!rec.length){dR.innerHTML='<div class="empty-state" style="padding:24px"><div class="empty-icon">📦</div><p>No hay pedidos aún</p></div>';return;}
+  dR.innerHTML='<div class="table-wrap"><table><thead><tr><th>Folio</th><th>Tipo</th><th>Cliente</th><th>Etapa</th><th>Estado</th><th>Entrega</th></tr></thead><tbody>'
+    +rec.map(function(p){return '<tr onclick="abrirPanel(\''+p.id+'\')">'
+      +'<td><span class="folio-badge">'+esc(p.folio)+'</span></td>'
+      +'<td><span class="tipo-badge tipo-'+p.tipo+'">'+p.tipo+'</span></td>'
+      +'<td>'+esc(p.clientes?p.clientes.nombre:'—')+'</td>'
+      +'<td><span class="etapa-chip">'+esc(p.etapa_actual)+'</span></td>'
+      +'<td><span class="estado-badge estado-'+p.estado+'">'+esc(p.estado.replace('_',' '))+'</span></td>'
+      +'<td>'+cd(p.fecha_comprometida)+'</td></tr>';}).join('')
+    +'</tbody></table></div>';
+}
+
+async function detMetrica(tipo){
+  var tit='';var q=sb.from('pedidos').select('id,folio,tipo,estado,etapa_actual,fecha_comprometida,clientes(nombre)').order('creado_en',{ascending:false});
+  if(tipo==='activos'){tit='Pedidos activos';q=q.neq('estado','entregado').neq('estado','cancelado');}
+  else if(tipo==='produccion'){tit='En producción';q=q.eq('estado','en_produccion');}
+  else if(tipo==='retrasados'){tit='Retrasados';q=q.eq('estado','retrasado');}
+  else{tit='Entregados';q=q.eq('estado','entregado');}
+  var res=await q;var ps=res.data||[];
+  abrirModal(tit+' ('+ps.length+')',
+    '<div class="table-wrap"><table><thead><tr><th>Folio</th><th>Tipo</th><th>Cliente</th><th>Etapa</th><th>Entrega</th></tr></thead><tbody>'
+    +ps.map(function(p){return '<tr onclick="cerrarModal();setTimeout(function(){abrirPanel(\''+p.id+'\');},100)">'
+      +'<td><span class="folio-badge">'+esc(p.folio)+'</span></td>'
+      +'<td><span class="tipo-badge tipo-'+p.tipo+'">'+p.tipo+'</span></td>'
+      +'<td>'+esc(p.clientes?p.clientes.nombre:'—')+'</td>'
+      +'<td><span class="etapa-chip">'+esc(p.etapa_actual)+'</span></td>'
+      +'<td>'+cd(p.fecha_comprometida)+'</td></tr>';}).join('')
+    +'</tbody></table></div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cerrar</button>',true);
+}
+
+/* --- PANEL LATERAL — ÚNICA DEFINICIÓN --- */
+async function abrirPanel(pid){
+  APP.pid=pid;
+  document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('panel-lateral').classList.add('open');
+  document.getElementById('panel-body').innerHTML='<div class="loading"><span class="spinner"></span>Cargando...</div>';
+  document.getElementById('panel-footer').innerHTML='';
+  var res=await sb.from('pedidos').select('*,clientes(nombre,telefono,email,empresa),usuarios(nombre)').eq('id',pid).single();
+  var p=res.data;if(!p){document.getElementById('panel-body').innerHTML='<p>Error.</p>';return;}
+  document.getElementById('panel-folio').textContent=p.folio;
+  document.getElementById('panel-sub').innerHTML='<span class="tipo-badge tipo-'+p.tipo+'" style="margin-right:5px">'+p.tipo+' — '+esc(TIPOS[p.tipo])+'</span>'
+    +'<span class="estado-badge estado-'+p.estado+'">'+p.estado.replace('_',' ')+'</span>';
+  var ruta=RUTAS[p.tipo]||[];
+  var eR=await sb.from('etapas_pedido').select('*,usuarios(nombre)').eq('pedido_id',pid).order('creado_en');
+  var eM={};(eR.data||[]).forEach(function(et){eM[et.etapa]=et;});
+  var rol=APP.user?APP.user.rol:'director';
+  var esDir=rol==='director';
+  var vPrecios=['director','vendedor'].indexOf(rol)>=0;
+  var tl='';
+  ruta.forEach(function(etapa,i){
+    var c=eM[etapa];var esA=etapa===p.etapa_actual;
+    var est=c?'done':esA?'current':'pending';
+    var ico=c?'✅':esA?'⏳':'○';
+    var meta=c?(esc(c.usuarios?c.usuarios.nombre:'—')+' · '+new Date(c.completado_en).toLocaleDateString('es-MX')):esA?'En proceso':'Pendiente';
+    tl+='<div class="timeline-item"><div class="timeline-icon-wrap">'
+      +'<div class="timeline-icon '+est+'">'+ico+'</div>'
+      +(i<ruta.length-1?'<div class="timeline-line '+(c?'done':'')+'"></div>':'')
+      +'</div><div class="timeline-content">'
+      +'<div class="timeline-etapa">'+esc(etapa)+'</div>'
+      +'<div class="timeline-meta">'+meta+'</div>'
+      +'</div></div>';
+  });
+  document.getElementById('panel-body').innerHTML=
+    '<div class="info-grid">'
+    +'<div class="info-item"><label>Cliente</label><span>'+esc(p.clientes?p.clientes.nombre:'—')+'</span></div>'
+    +(p.clientes&&p.clientes.empresa?'<div class="info-item"><label>Empresa</label><span>'+esc(p.clientes.empresa)+'</span></div>':'')
+    +'<div class="info-item"><label>Etapa</label><span>'+esc(p.etapa_actual)+'</span></div>'
+    +'<div class="info-item"><label>Entrega</label><span>'+ff(p.fecha_comprometida)+'</span></div>'
+    +(p.tela_tipo?'<div class="info-item"><label>Tela</label><span>'+esc(p.tela_tipo)+'</span></div>':'')
+    +(p.lado_sublimacion?'<div class="info-item"><label>Lado sub.</label><span>'+esc(p.lado_sublimacion)+'</span></div>':'')
+    +(p.tipo_prenda?'<div class="info-item"><label>Prenda</label><span>'+esc(p.tipo_prenda)+'</span></div>':'')
+    +(p.genero_prenda?'<div class="info-item"><label>Género</label><span>'+esc(p.genero_prenda)+'</span></div>':'')
+    +(vPrecios&&p.precio_total?'<div class="info-item"><label>Total</label><span style="font-weight:800;color:var(--primary)">$'+Number(p.precio_total).toLocaleString('es-MX')+'</span></div>':'')
+    +'</div>'
+    +(p.observaciones?'<div style="margin-bottom:12px"><div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px">Observaciones</div>'
+      +'<div style="font-size:12px;background:var(--bg);padding:8px;border-radius:6px">'+esc(p.observaciones)+'</div></div>':'')
+    +(p.notas_director&&esDir?'<div style="margin-bottom:12px"><div style="font-size:9px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:2px">Notas director</div>'
+      +'<div style="font-size:12px;background:var(--primary-light);padding:8px;border-radius:6px">'+esc(p.notas_director)+'</div></div>':'')
+    +'<div class="section-title" style="margin-bottom:8px">🗓️ Ruta de producción</div>'
+    +'<div>'+tl+'</div>';
+  var etAct=p.etapa_actual;
+  var pComp=canComplete(rol,etAct,p.estado);
+  var foot='';
+  if(esDir&&p.estado==='pendiente')foot+='<button class="btn btn-primary" onclick="aprobar(\''+pid+'\')">✅ Aprobar</button>';
+  if(pComp&&p.estado!=='entregado'&&p.estado!=='cancelado')foot+='<button class="btn btn-success" onclick="abrirCE(\''+pid+'\',\''+esc(etAct)+'\',\''+p.tipo+'\')">✔️ Completar: '+esc(etAct)+'</button>';
+  if(esDir&&p.estado!=='cancelado')foot+='<button class="btn btn-outline btn-sm" onclick="cambPrio(\''+pid+'\','+p.prioridad+')">🎯 Prioridad</button>';
+  if(esDir)foot+='<button class="btn btn-outline btn-sm" onclick="modalNotas(\''+pid+'\',\''+esc(p.notas_director||'')+'\')">📝 Notas</button>';
+  foot+='<button class="btn btn-ghost btn-sm" onclick="impHV(\''+pid+'\')">🖨️ Hoja viajera</button>';
+  document.getElementById('panel-footer').innerHTML=foot;
+}
+
+function canComplete(rol,etapa,estado){
+  if(estado==='entregado'||estado==='cancelado')return false;
+  var m={
+    'Aprobación':['director'],
+    'Almacén Entrada':['almacen','director'],
+    'Impresión':['impresor','director'],
+    'Calandra':['calandra','director'],
+    'Corte':['corte','director'],
+    'Costura':['costura','director'],
+    'Calidad':['almacen','director'],
+    'Almacén Salida':['almacen','director'],
+    'Muestra':['director','vendedor'],
+    'Aprobación Cliente':['director','vendedor'],
+    'Bordado':['director']
+  };
+  return(m[etapa]||['director']).indexOf(rol)>=0;
+}
+
+async function aprobar(pid){
+  var u=APP.user;
+  var r=await sb.from('pedidos').select('tipo,folio').eq('id',pid).single();
+  var p=r.data;var ruta=RUTAS[p.tipo]||[];var sig=ruta[1]||'Aprobación';
+  await sb.from('etapas_pedido').insert({pedido_id:pid,etapa:'Captura',completado_por:u.id,datos_json:{}});
+  await sb.from('pedidos').update({etapa_actual:sig,estado:'en_produccion',aprobado_por:u.id,aprobado_en:new Date().toISOString()}).eq('id',pid);
+  toast('Pedido '+p.folio+' aprobado');abrirPanel(pid);
+  if(APP.mod==='dashboard')rDash();
+  if(APP.mod==='todos-pedidos')rTodos(false);
+}
+
+async function cambPrio(pid,act){
+  var nv=act===1?3:act===3?2:1;
+  var lb=nv===1?'🔴 Alta':nv===2?'🟡 Media':'🟢 Normal';
+  await sb.from('pedidos').update({prioridad:nv}).eq('id',pid);
+  toast('Prioridad: '+lb);abrirPanel(pid);
+}
+
+function modalNotas(pid,n){
+  abrirModal('📝 Notas del director',
+    '<div class="form-group"><label>Solo visible para el director</label><textarea class="form-control" id="nd" rows="5">'+esc(n)+'</textarea></div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNotas(\''+pid+'\')">Guardar</button>');
+}
+async function saveNotas(pid){
+  await sb.from('pedidos').update({notas_director:gv('nd')}).eq('id',pid);
+  toast('Notas guardadas');cerrarModal();abrirPanel(pid);
+}
+
+/* --- COMPLETAR ETAPA --- */
+function abrirCE(pid,etapa,tipo){
+  var ex='';
+  if(etapa==='Almacén Entrada'){
+    ex='<div class="form-section"><div class="form-section-title">📦 Packing List — Rollos recibidos</div>'
+      +'<div id="rl-ent"></div>'
+      +'<button type="button" class="btn btn-outline btn-sm" style="margin-top:7px" onclick="addRollo()">➕ Rollo</button></div>'
+      +'<div class="form-group"><label>Incidencias</label><textarea class="form-control" id="ce-inc" placeholder="Algún problema..."></textarea></div>';
+  } else if(etapa==='Impresión'){
+    ex='<div class="form-section"><div class="form-section-title">🖨️ Impresión</div>'
+      +'<div class="alert alert-info">⏱️ El timestamp se registra automáticamente al confirmar</div>'
+      +'<div class="form-grid">'
+      +'<div class="form-group"><label>Metros impresos</label><input type="number" class="form-control" id="ce-imp" step="0.1" min="0" oninput="calcP()"/></div>'
+      +'<div class="form-group"><label>Metros desechados</label><input type="number" class="form-control" id="ce-des" step="0.1" min="0" oninput="calcP()"/></div>'
+      +'</div>'
+      +'<div class="form-group"><label>Rollo de papel usado</label><input type="text" class="form-control" id="ce-rollo"/></div>'
+      +'<div class="form-group"><label>Metros papel <small style="font-weight:400;color:var(--text-muted)">(automático)</small></label>'
+      +'<input type="number" class="form-control" id="ce-mp" readonly style="background:var(--bg)"/></div></div>';
+  } else if(etapa==='Calandra'){
+    ex='<div class="form-section"><div class="form-section-title">🔥 Calandra</div>'
+      +'<div class="alert alert-info">🌡️ Temperatura fija: <strong>205°C</strong></div>'
+      +'<div class="form-grid">'
+      +'<div class="form-group"><label>Metros calandrados</label><input type="number" class="form-control" id="ce-cal" step="0.1" min="0"/></div>'
+      +'<div class="form-group"><label>Velocidad (m/h)</label><input type="number" class="form-control" id="ce-vel" placeholder="220"/></div>'
+      +'</div>'
+      +'<div class="form-group"><label>¿Error detectado?</label><select class="form-control" id="ce-err"><option value="">Sin errores</option><option>Temperatura</option><option>Color</option><option>Velocidad</option><option>Otro</option></select></div>'
+      +'<div class="form-group"><label>¿Se pausó? Motivo (vacío si no)</label><input type="text" class="form-control" id="ce-pau"/></div></div>';
+  } else if(etapa==='Corte'){
+    ex='<div class="form-section"><div class="form-section-title">✂️ Corte</div>'
+      +'<div class="form-grid">'
+      +'<div class="form-group"><label>Metros usados</label><input type="number" class="form-control" id="ce-mc" step="0.1" min="0"/></div>'
+      +'<div class="form-group"><label>Merma (m)</label><input type="number" class="form-control" id="ce-mer" step="0.1" min="0"/></div>'
+      +'<div class="form-group"><label>Prendas cortadas</label><input type="number" class="form-control" id="ce-pc" min="0"/></div>'
+      +'</div></div>';
+  } else if(etapa==='Costura'){
+    ex='<div class="form-section"><div class="form-section-title">🧵 Costura</div>'
+      +'<div class="form-grid">'
+      +'<div class="form-group"><label>Recibidas</label><input type="number" class="form-control" id="ce-pr" min="0"/></div>'
+      +'<div class="form-group"><label>Terminadas</label><input type="number" class="form-control" id="ce-pt" min="0"/></div>'
+      +'<div class="form-group"><label>Rechazadas</label><input type="number" class="form-control" id="ce-prh" min="0"/></div>'
+      +'</div></div>';
+  } else if(etapa==='Calidad'||etapa==='Almacén Salida'){
+    ex='<div class="form-section"><div class="form-section-title">✅ Calidad y salida</div>'
+      +'<div class="form-grid">'
+      +'<div class="form-group"><label>Prendas aprobadas</label><input type="number" class="form-control" id="ce-ap" min="0"/></div>'
+      +'<div class="form-group"><label>Prendas rechazadas</label><input type="number" class="form-control" id="ce-rh" min="0"/></div>'
+      +'</div>'
+      +'<div class="form-group"><label>Método entrega</label><select class="form-control" id="ce-met"><option>Chofer propio</option><option>Paquetería</option><option>Cliente recoge</option></select></div>'
+      +'<div class="form-group"><label>Guía paquetería (si aplica)</label><input type="text" class="form-control" id="ce-guia"/></div></div>';
+  }
+  abrirModal('Completar: '+etapa,
+    '<div class="form-group"><label>Notas de esta etapa</label><textarea class="form-control" id="ce-n" placeholder="Observaciones..."></textarea></div>'+ex,
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-success" onclick="saveEtapa(\''+pid+'\',\''+etapa+'\',\''+tipo+'\')">✔️ Confirmar</button>');
+  if(etapa==='Almacén Entrada'){document.getElementById('rl-ent').innerHTML='';addRollo();}
+}
+
+function calcP(){
+  var i=parseFloat(gv('ce-imp'))||0;var d=parseFloat(gv('ce-des'))||0;
+  var el=document.getElementById('ce-mp');if(el)el.value=(i+d).toFixed(1);
+}
+
+function addRollo(){
+  var c=document.getElementById('rl-ent');var n=c.children.length+1;
+  var d=document.createElement('div');d.className='diseno-row';
+  d.innerHTML='<div class="diseno-row-header"><span class="diseno-num">Rollo #'+n+'</span>'
+    +(n>1?'<button type="button" class="btn-remove" onclick="this.closest(\'.diseno-row\').remove()">✕</button>':'')+'</div>'
+    +'<div class="form-grid cols3">'
+    +'<div class="form-group"><label>Metros reales</label><input type="number" class="form-control rm" step="0.1" min="0" placeholder="0.0"/></div>'
+    +'<div class="form-group"><label>Ancho (cm)</label><input type="number" class="form-control ra" step="0.5" min="0" placeholder="160"/></div>'
+    +'<div class="form-group"><label>Lote</label><input type="text" class="form-control rl" placeholder="Opcional"/></div>'
+    +'</div>';
+  c.appendChild(d);
+}
+
+async function saveEtapa(pid,etapa,tipo){
+  var u=APP.user;
+  var datos={notas:gv('ce-n'),timestamp:new Date().toISOString()};
+  if(etapa==='Almacén Entrada'){
+    var rollos=[];
+    document.querySelectorAll('#rl-ent .diseno-row').forEach(function(row,i){
+      rollos.push({numero_rollo:i+1,
+        metros_reales:parseFloat(row.querySelector('.rm')?row.querySelector('.rm').value:0)||0,
+        ancho_cm:parseFloat(row.querySelector('.ra')?row.querySelector('.ra').value:0)||0,
+        lote_entrada:row.querySelector('.rl')?row.querySelector('.rl').value:''});
+    });
+    if(rollos.length){
+      await sb.from('packing_list_rollos').delete().eq('pedido_id',pid);
+      await sb.from('packing_list_rollos').insert(rollos.map(function(r){return Object.assign({},r,{pedido_id:pid});}));
+    }
+    datos.rollos=rollos;datos.incidencias=gv('ce-inc');
+  } else if(etapa==='Impresión'){
+    var imp=parseFloat(gv('ce-imp'))||0;var des=parseFloat(gv('ce-des'))||0;
+    datos.metros_impresos=imp;datos.metros_desechados=des;datos.metros_papel=imp+des;datos.rollo=gv('ce-rollo');
+    var rn=datos.rollo;
+    if(rn&&datos.metros_papel>0){
+      var rr=await sb.from('rollos_papel').select('id,metros_usados').eq('numero_rollo',rn).single();
+      if(rr.data)await sb.from('rollos_papel').update({metros_usados:(rr.data.metros_usados||0)+datos.metros_papel}).eq('id',rr.data.id);
+    }
+  } else if(etapa==='Calandra'){
+    datos.metros=gv('ce-cal');datos.velocidad=gv('ce-vel');datos.temperatura='205°C';
+    datos.error=gv('ce-err');datos.pausa=gv('ce-pau');
+  } else if(etapa==='Corte'){
+    datos.metros=gv('ce-mc');datos.merma=gv('ce-mer');datos.prendas=gv('ce-pc');
+  } else if(etapa==='Costura'){
+    datos.recibidas=gv('ce-pr');datos.terminadas=gv('ce-pt');datos.rechazadas=gv('ce-prh');
+  } else if(etapa==='Calidad'||etapa==='Almacén Salida'){
+    datos.aprobadas=gv('ce-ap');datos.rechazadas=gv('ce-rh');datos.metodo=gv('ce-met');datos.guia=gv('ce-guia');
+  }
+  await sb.from('etapas_pedido').insert({pedido_id:pid,etapa:etapa,completado_por:u.id,datos_json:datos});
+  var ruta=RUTAS[tipo]||[];var idx=ruta.indexOf(etapa);
+  if(idx===ruta.length-1||etapa==='Almacén Salida'){
+    await sb.from('pedidos').update({etapa_actual:'Completado',estado:'entregado'}).eq('id',pid);
+    toast('🎉 ¡Pedido entregado!');
+  } else {
+    await sb.from('pedidos').update({etapa_actual:ruta[idx+1],estado:'en_produccion'}).eq('id',pid);
+    toast('Etapa completada → '+ruta[idx+1]);
+  }
+  cerrarModal();abrirPanel(pid);
+  if(['dashboard','todos-pedidos'].indexOf(APP.mod)>=0)cambiarModulo(APP.mod);
+}
+/* FIN PARTE 2 */
+/* ============ PARTE 3: TODOS LOS PEDIDOS + NUEVO PEDIDO ============ */
+
+/* --- TODOS LOS PEDIDOS --- */
+async function rTodos(soloHistorial){
+  var area=document.getElementById('area-modulo');
+  var rol=APP.user?APP.user.rol:'director';
+  var puedeNuevo=['director','vendedor'].indexOf(rol)>=0;
+  area.innerHTML='<div class="modulo-header"><div><h2>'+(soloHistorial?'Historial':'Todos los pedidos')+'</h2></div>'
+    +(puedeNuevo?'<button class="btn btn-primary" onclick="cambiarModulo(\'nuevo-pedido\')">➕ Nuevo</button>':'')+'</div>'
+    +'<div class="filtros-bar">'
+    +'<div class="search-box"><span>🔍</span><input type="text" id="fil-q" placeholder="Buscar folio, cliente..." oninput="filTabla()"/></div>'
+    +'<button class="filtro-chip active" onclick="setFil(this,\'todos\')">Todos</button>'
+    +'<button class="filtro-chip" onclick="setFil(this,\'pendiente\')">Pendiente</button>'
+    +'<button class="filtro-chip" onclick="setFil(this,\'en_produccion\')">En producción</button>'
+    +'<button class="filtro-chip" onclick="setFil(this,\'retrasado\')">Retrasados</button>'
+    +'</div>'
+    +'<div class="card" style="padding:0"><div class="table-wrap" id="tabla-wrap"><div class="loading"><span class="spinner"></span></div></div></div>';
+  var q=sb.from('pedidos').select('id,folio,tipo,estado,etapa_actual,prioridad,fecha_comprometida,clientes(nombre),usuarios(nombre)').order('creado_en',{ascending:false});
+  if(soloHistorial)q=q.eq('estado','entregado');else q=q.neq('estado','entregado');
+  var res=await q;
+  window._pt=res.data||[];window._pf='todos';
+  renderTabla(window._pt);
+}
+function setFil(el,f){
+  window._pf=f;
+  document.querySelectorAll('.filtro-chip').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');filTabla();
+}
+function filTabla(){
+  var q=(gv('fil-q')||'').toLowerCase();var f=window._pf||'todos';
+  var lista=window._pt||[];
+  if(f!=='todos')lista=lista.filter(function(p){return p.estado===f;});
+  if(q)lista=lista.filter(function(p){return(p.folio||'').toLowerCase().indexOf(q)>=0||(p.clientes?p.clientes.nombre||'':'').toLowerCase().indexOf(q)>=0;});
+  renderTabla(lista);
+}
+function renderTabla(pedidos){
+  var wrap=document.getElementById('tabla-wrap');if(!wrap)return;
+  if(!pedidos.length){wrap.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><h3>Sin pedidos</h3></div>';return;}
+  var esDir=APP.user&&APP.user.rol==='director';
+  wrap.innerHTML='<table><thead><tr><th>Folio</th><th>Tipo</th><th>Cliente</th><th>Etapa</th><th>Estado</th><th>Entrega</th>'+(esDir?'<th></th>':'')+'</tr></thead><tbody>'
+    +pedidos.map(function(p){return '<tr onclick="abrirPanel(\''+p.id+'\')">'
+      +'<td><span class="folio-badge">'+esc(p.folio)+'</span></td>'
+      +'<td><span class="tipo-badge tipo-'+p.tipo+'">'+p.tipo+'</span></td>'
+      +'<td>'+esc(p.clientes?p.clientes.nombre:'—')+'</td>'
+      +'<td><span class="etapa-chip">'+esc(p.etapa_actual)+'</span></td>'
+      +'<td><span class="estado-badge estado-'+p.estado+'">'+esc(p.estado.replace('_',' '))+'</span></td>'
+      +'<td>'+cd(p.fecha_comprometida)+'</td>'
+      +(esDir?'<td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelarPed(\''+p.id+'\')">❌</button></td>':'')
+      +'</tr>';}).join('')+'</tbody></table>';
+}
+async function cancelarPed(id){
+  if(!confirm('¿Cancelar este pedido?'))return;
+  await sb.from('pedidos').update({estado:'cancelado'}).eq('id',id);
+  toast('Pedido cancelado');rTodos(false);
+}
+
+/* --- NUEVO PEDIDO --- */
+async function rNuevoPed(){
+  var area=document.getElementById('area-modulo');
+  var r=await Promise.all([
+    sb.from('clientes').select('id,nombre,empresa').eq('activo',true).order('nombre'),
+    sb.from('tipos_tela').select('nombre').eq('activo',true).order('nombre'),
+    sb.from('maquileros').select('id,nombre').eq('activo',true).order('nombre'),
+    sb.from('tipos_prenda').select('nombre').order('nombre')
+  ]);
+  var clientes=r[0].data||[];var tiposTela=r[1].data||[];
+  window._maqs=r[2].data||[];window._tpList=r[3].data||[];
+  window._tipoPed=null;window._subMue=null;window._dcnt=0;
+
+  var telasOpts=tiposTela.map(function(t){return '<option value="'+esc(t.nombre)+'"/>';}).join('');
+  var prendasOpts=(window._tpList||[]).map(function(t){return '<option value="'+esc(t.nombre)+'"/>';}).join('');
+
+  area.innerHTML='<div class="modulo-header"><div><h2>Nuevo pedido</h2></div></div>'
+    /* TIPO */
+    +'<div class="form-section"><div class="form-section-title">📋 Tipo de pedido</div>'
+    +'<div class="tipo-selector">'
+    +Object.entries(TIPOS).map(function(e){return '<div class="tipo-opt" data-tipo="'+e[0]+'" onclick="selTipo(\''+e[0]+'\')"><div class="tipo-code">'+e[0]+'</div><div class="tipo-name">'+e[1]+'</div></div>';}).join('')
+    +'</div></div>'
+    /* GENERALES */
+    +'<div class="form-section"><div class="form-section-title">👥 Datos generales</div><div class="form-grid">'
+    +'<div class="form-group"><label>Cliente *</label>'
+    +'<select class="form-control" id="np-cli"><option value="">— Seleccionar —</option>'
+    +clientes.map(function(c){return '<option value="'+c.id+'">'+esc(c.nombre)+(c.empresa?' — '+c.empresa:'')+'</option>';}).join('')+'</select>'
+    +'<div style="margin-top:5px"><button type="button" class="btn btn-ghost btn-sm" onclick="modalCliente()">➕ Nuevo cliente</button></div></div>'
+    +'<div class="form-group"><label>Fecha entrega *</label><input type="date" class="form-control" id="np-fecha"/></div>'
+    +'<div class="form-group form-full"><label>Observaciones</label><textarea class="form-control" id="np-obs" placeholder="Instrucciones especiales..."></textarea></div>'
+    +'</div></div>'
+    /* TELA */
+    +'<div id="sec-tela" class="form-section" style="display:none"><div class="form-section-title">🧵 Tela</div><div class="form-grid">'
+    +'<div class="form-group"><label>Tipo de tela</label>'
+    +'<input list="dl-telas" class="form-control" id="np-tela" placeholder="Selecciona o escribe..."/>'
+    +'<datalist id="dl-telas">'+telasOpts+'</datalist>'
+    +'<div style="margin-top:5px"><button type="button" class="btn btn-ghost btn-sm" onclick="nuevaTela()">➕ Tela nueva</button></div></div>'
+    +'<div class="form-group"><label>¿Tela propia IJ?</label>'
+    +'<div class="toggle-wrap" style="margin-top:9px"><label class="toggle"><input type="checkbox" id="np-propia" checked onchange="toggleTela()"/><span class="toggle-slider"></span></label>'
+    +'<span class="toggle-label" id="lbl-tela">Sí — tela de IJ</span></div></div>'
+    +'<div class="form-group" id="sec-log" style="display:none"><label>¿Cómo llega la tela?</label>'
+    +'<select class="form-control" id="np-log"><option>Chofer recoge</option><option>Cliente la trae</option></select></div>'
+    +'</div></div>'
+    /* SUB */
+    +'<div id="sec-sub" class="form-section" style="display:none"><div class="form-section-title">🎨 Sublimación</div><div class="form-grid">'
+    +'<div class="form-group"><label>Unidad</label><select class="form-control" id="np-um"><option>Metros</option><option>Rollos</option><option>Repeticiones</option><option>Kilogramos</option></select></div>'
+    +'<div class="form-group"><label>Cantidad</label><input type="number" class="form-control" id="np-cant" step="0.1" min="0"/></div>'
+    +'<div class="form-group"><label>Lado sublimación</label><select class="form-control" id="np-lado"><option>Derecho</option><option>Revés</option><option>Ambos</option></select></div>'
+    +'<div class="form-group"><label>Precio sub ($/m)</label><input type="number" class="form-control" id="np-psub" step="0.01" min="0"/></div>'
+    +'<div class="form-group"><label>Precio tela ($/m)</label><input type="number" class="form-control" id="np-ptela" step="0.01" min="0"/></div>'
+    +'</div></div>'
+    /* PTS */
+    +'<div id="sec-pts" class="form-section" style="display:none"><div class="form-section-title">👕 Prenda terminada</div><div class="form-grid">'
+    +'<div class="form-group"><label>Tipo de prenda</label>'
+    +'<input list="dl-prendas" class="form-control" id="np-tp" placeholder="Playera, Short, Pants..."/>'
+    +'<datalist id="dl-prendas">'+prendasOpts+'</datalist></div>'
+    +'<div class="form-group"><label>Género</label><select class="form-control" id="np-gen"><option>Hombre</option><option>Mujer</option><option>Niño</option><option>Niña</option><option>Unisex</option></select></div>'
+    +'<div class="form-group"><label>Precio por prenda ($)</label><input type="number" class="form-control" id="np-pprenda" step="0.01" min="0"/></div>'
+    +'</div></div>'
+    /* MUE */
+    +'<div id="sec-mue" class="form-section" style="display:none"><div class="form-section-title">🔬 Tipo de muestra</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px">'
+    +'<div class="tipo-opt" onclick="selMue(this,\'planchazo\')"><div class="tipo-code" style="font-size:14px">📐</div><div class="tipo-name">Planchazo (30×30cm)</div></div>'
+    +'<div class="tipo-opt" onclick="selMue(this,\'prenda\')"><div class="tipo-code" style="font-size:14px">👕</div><div class="tipo-name">Prenda física</div></div>'
+    +'<div class="tipo-opt" onclick="selMue(this,\'digital\')"><div class="tipo-code" style="font-size:14px">💻</div><div class="tipo-name">Digital (mockup)</div></div>'
+    +'</div></div>'
+    /* DISEÑOS */
+    +'<div id="sec-dis" class="form-section" style="display:none"><div class="form-section-title">🖼️ Diseños</div>'
+    +'<div id="dis-cont"></div>'
+    +'<button type="button" class="btn btn-outline btn-sm" onclick="renderDisenos()">➕ Agregar diseño</button></div>'
+    /* MAQUILA */
+    +'<div id="sec-maq" class="form-section" style="display:none"><div class="form-section-title">🔧 Maquila</div>'
+    +'<div class="form-group"><label>Destino</label>'
+    +'<select class="form-control" id="np-dest" onchange="toggleDest()"><option value="propio">Taller propio</option><option value="maquila">Maquila externa</option><option value="ambos">Ambos</option></select></div>'
+    +'<div id="sec-maqs" style="display:none"><div id="maqs-cont"></div>'
+    +'<button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addMaq()">➕ Maquilero</button></div>'
+    +'<div class="form-group" style="margin-top:13px"><label>Procesos extra</label>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:7px">'
+    +['Bordado','DTF','Tampografía','Vinil','Etiquetado'].map(function(p){
+      return '<label style="display:flex;align-items:center;gap:5px;padding:7px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;background:white;user-select:none">'
+        +'<input type="checkbox" name="proceso" value="'+p+'" '+(p==='Etiquetado'?'checked':'')
+        +' style="accent-color:var(--primary)"> '+p+'</label>';}).join('')
+    +'</div></div></div>'
+    /* VT */
+    +'<div id="sec-vt" class="form-section" style="display:none"><div class="form-section-title">🏷️ Venta de tela</div><div class="form-grid">'
+    +'<div class="form-group"><label>Tipo tela</label><input list="dl-telas2" class="form-control" id="np-vtela"/><datalist id="dl-telas2">'+telasOpts+'</datalist></div>'
+    +'<div class="form-group"><label>Color</label><input type="text" class="form-control" id="np-vcolor" placeholder="Blanco, Negro..."/></div>'
+    +'<div class="form-group"><label>Unidad</label><select class="form-control" id="np-vum"><option>Metros</option><option>Kilogramos</option><option>Rollos</option></select></div>'
+    +'<div class="form-group"><label>Cantidad</label><input type="number" class="form-control" id="np-vcant" step="0.1" min="0"/></div>'
+    +'<div class="form-group"><label>Precio total ($)</label><input type="number" class="form-control" id="np-vprecio" step="0.01" min="0"/></div>'
+    +'</div></div>'
+    /* PI */
+    +'<div id="sec-pi" class="form-section" style="display:none"><div class="form-section-title">🧻 Papel de impresión</div>'
+    +'<div class="form-grid">'
+    +'<div class="form-group"><label>Ancho</label><select class="form-control" id="np-pian"><option value="162">162 cm</option><option value="182">182 cm</option></select></div>'
+    +'<div class="form-group"><label>Precio ($/m)</label><input type="number" class="form-control" id="np-piprecio" step="0.01" min="0"/></div>'
+    +'</div>'
+    +'<div id="pi-cont"></div>'
+    +'<button type="button" class="btn btn-outline btn-sm" onclick="addDisPI()">➕ Diseño/metraje</button></div>'
+    /* SUBMIT */
+    +'<div style="display:flex;justify-content:flex-end;gap:9px;margin-top:8px">'
+    +'<button type="button" class="btn btn-ghost" onclick="cambiarModulo(\'todos-pedidos\')">Cancelar</button>'
+    +'<button type="button" class="btn btn-primary" style="min-width:150px" onclick="enviarPed()">💾 Guardar pedido</button>'
+    +'</div>';
+}
+
+function selTipo(tipo){
+  document.querySelectorAll('.tipo-opt[data-tipo]').forEach(function(el){el.classList.remove('selected');});
+  var el=document.querySelector('.tipo-opt[data-tipo="'+tipo+'"]');if(el)el.classList.add('selected');
+  window._tipoPed=tipo;
+  var secs={tela:false,sub:false,pts:false,mue:false,dis:false,maq:false,vt:false,pi:false};
+  if(tipo==='SUB'){secs.tela=true;secs.sub=true;secs.dis=true;}
+  if(tipo==='PTS'){secs.tela=true;secs.sub=true;secs.pts=true;secs.dis=true;secs.maq=true;}
+  if(tipo==='MUE'){secs.mue=true;secs.dis=true;}
+  if(tipo==='VT')secs.vt=true;
+  if(tipo==='PI')secs.pi=true;
+  Object.keys(secs).forEach(function(k){var s=document.getElementById('sec-'+k);if(s)s.style.display=secs[k]?'block':'none';});
+  if(secs.dis){window._dcnt=0;document.getElementById('dis-cont').innerHTML='';renderDisenos();}
+  if(tipo==='PI'){document.getElementById('pi-cont').innerHTML='';addDisPI();}
+}
+
+function selMue(el,sub){
+  document.querySelectorAll('#sec-mue .tipo-opt').forEach(function(e){e.classList.remove('selected');});
+  el.classList.add('selected');window._subMue=sub;
+}
+
+function toggleTela(){
+  var p=document.getElementById('np-propia')?document.getElementById('np-propia').checked:true;
+  document.getElementById('lbl-tela').textContent=p?'Sí — tela de IJ':'No — del cliente';
+  var sl=document.getElementById('sec-log');if(sl)sl.style.display=p?'none':'block';
+}
+
+function toggleDest(){
+  var d=gv('np-dest');var sec=document.getElementById('sec-maqs');
+  if(sec)sec.style.display=(d==='maquila'||d==='ambos')?'block':'none';
+  if(d!=='propio'&&document.getElementById('maqs-cont').children.length===0)addMaq();
+}
+
+async function nuevaTela(){
+  var n=prompt('Nombre de la nueva tela:');if(!n||!n.trim())return;
+  await sb.from('tipos_tela').insert({nombre:n.trim()});
+  var dl=document.getElementById('dl-telas');
+  if(dl){var o=document.createElement('option');o.value=n.trim();dl.appendChild(o);}
+  var inp=document.getElementById('np-tela');if(inp)inp.value=n.trim();
+  toast('Tela "'+n+'" agregada');
+}
+
+/* renderDisenos — SOLO para formulario de pedido */
+function renderDisenos(){
+  window._dcnt=(window._dcnt||0)+1;var n=window._dcnt;
+  var tipo=window._tipoPed||'SUB';
+  var cont=document.getElementById('dis-cont');if(!cont)return;
+  var div=document.createElement('div');div.className='diseno-row';div.id='df-'+n;
+  var tallasHtml='';
+  if(tipo==='PTS'){
+    tallasHtml='<div style="margin-top:10px">'
+      +'<div style="font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:5px">TALLAS — Diseño '+n
+      +' <span id="td-'+n+'" style="color:var(--primary);font-weight:800">Total: 0</span></div>'
+      +'<div class="tallas-grid">'
+      +TALLAS.map(function(t){return '<div class="talla-input-wrap"><div class="talla-label">'+t+'</div>'
+        +'<input type="number" class="talla-qty" data-t="'+t+'" data-d="'+n+'" min="0" value="0" oninput="updTotal('+n+')"/></div>';}).join('')
+      +'</div></div>';
+  }
+  div.innerHTML='<div class="diseno-row-header"><span class="diseno-num">Diseño '+n+'</span>'
+    +(n>1?'<button type="button" class="btn-remove" onclick="this.closest(\'.diseno-row\').remove()">✕</button>':'')+'</div>'
+    +'<div class="form-grid">'
+    +'<div class="form-group"><label>Imagen del diseño</label>'
+    +'<div style="display:flex;align-items:center;gap:9px">'
+    +'<div class="img-placeholder" id="iprev-'+n+'" onclick="document.getElementById(\'ifile-'+n+'\').click()">🖼️</div>'
+    +'<div><input type="file" class="file-input-hidden" id="ifile-'+n+'" accept="image/*" onchange="subirImg(this,'+n+')"/>'
+    +'<button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById(\'ifile-'+n+'\').click()">📷 Subir foto</button>'
+    +'<input type="hidden" id="iurl-'+n+'"/>'
+    +'<div class="form-hint">Desde celular o computadora</div></div></div></div>'
+    +'<div class="form-group"><label>Metros a imprimir</label><input type="number" class="form-control dis-m" step="0.1" min="0" placeholder="0.0"/></div>'
+    +'<div class="form-group form-full"><label>Observaciones del diseño</label><input type="text" class="form-control dis-obs" placeholder="Indicaciones especiales..."/></div>'
+    +'</div>'+tallasHtml;
+  cont.appendChild(div);
+}
+
+function updTotal(n){
+  var t=0;document.querySelectorAll('[data-d="'+n+'"]').forEach(function(i){t+=parseInt(i.value||0)||0;});
+  var el=document.getElementById('td-'+n);if(el)el.textContent='Total: '+t;
+}
+
+async function subirImg(input,n){
+  var file=input.files[0];if(!file)return;
+  var prev=document.getElementById('iprev-'+n);
+  if(prev)prev.innerHTML='<div style="font-size:10px;padding:8px;text-align:center">⏳</div>';
+  var path='disenos/'+Date.now()+'-'+n+'.'+file.name.split('.').pop();
+  var res=await sb.storage.from('disenos').upload(path,file,{upsert:true});
+  if(res.error){toast('Error al subir imagen: '+res.error.message,'danger');if(prev)prev.innerHTML='🖼️';return;}
+  var url=sb.storage.from('disenos').getPublicUrl(path).data.publicUrl;
+  var uel=document.getElementById('iurl-'+n);if(uel)uel.value=url;
+  if(prev)prev.innerHTML='<img src="'+url+'" style="width:70px;height:70px;border-radius:7px;object-fit:cover"/>';
+}
+
+function addDisPI(){
+  var cont=document.getElementById('pi-cont');var n=cont.children.length+1;
+  var div=document.createElement('div');div.className='diseno-row';
+  div.innerHTML='<div class="diseno-row-header"><span class="diseno-num">Diseño '+n+'</span>'
+    +(n>1?'<button type="button" class="btn-remove" onclick="this.closest(\'.diseno-row\').remove()">✕</button>':'')+'</div>'
+    +'<div class="form-grid">'
+    +'<div class="form-group"><label>Nombre/descripción</label><input type="text" class="form-control pi-n" placeholder="Logo, floral..."/></div>'
+    +'<div class="form-group"><label>Metros</label><input type="number" class="form-control pi-m" step="0.1" min="0" placeholder="0.0"/></div>'
+    +'</div>';
+  cont.appendChild(div);
+}
+
+function addMaq(){
+  var cont=document.getElementById('maqs-cont');var n=cont.children.length+1;
+  var div=document.createElement('div');div.className='diseno-row';
+  div.innerHTML='<div class="diseno-row-header"><span class="diseno-num">Maquilero '+n+'</span>'
+    +(n>1?'<button type="button" class="btn-remove" onclick="this.closest(\'.diseno-row\').remove()">✕</button>':'')+'</div>'
+    +'<div class="form-grid">'
+    +'<div class="form-group"><label>Maquilero</label>'
+    +'<input list="dl-maqs" class="form-control mq-n" placeholder="Nombre"/>'
+    +'<datalist id="dl-maqs">'+(window._maqs||[]).map(function(m){return '<option value="'+esc(m.nombre)+'"/>';}).join('')+'</datalist></div>'
+    +'<div class="form-group"><label>Prendas</label><input type="number" class="form-control mq-p" min="0" placeholder="0"/></div>'
+    +'</div>';
+  cont.appendChild(div);
+}
+
+async function enviarPed(){
+  var tipo=window._tipoPed;
+  if(!tipo){toast('Selecciona tipo de pedido','warning');return;}
+  var cli=gv('np-cli');if(!cli){toast('Selecciona un cliente','warning');return;}
+  var fecha=gv('np-fecha');if(!fecha){toast('Indica fecha de entrega','warning');return;}
+  if(tipo==='MUE'&&!window._subMue){toast('Selecciona tipo de muestra','warning');return;}
+  var cnt=await sb.from('pedidos').select('id',{count:'exact',head:true});
+  var folio='IJ-'+tipo+'-'+String((cnt.count||0)+1).padStart(4,'0');
+  var u=APP.user;
+  var d={folio:folio,tipo:tipo,cliente_id:cli,vendedor_id:u.id,etapa_actual:'Captura',
+    estado:'pendiente',prioridad:3,fecha_comprometida:fecha,
+    observaciones:gv('np-obs')||null};
+  if(tipo==='MUE')d.subtipo_muestra=window._subMue;
+  if(document.getElementById('np-tela'))d.tela_tipo=gv('np-tela')||null;
+  if(document.getElementById('np-propia'))d.tela_propia=document.getElementById('np-propia').checked;
+  if(document.getElementById('np-lado'))d.lado_sublimacion=gv('np-lado');
+  if(document.getElementById('np-um'))d.unidad_medida=gv('np-um');
+  if(document.getElementById('np-psub'))d.precio_sublimado=gf('np-psub');
+  if(document.getElementById('np-ptela'))d.precio_tela=gf('np-ptela');
+  if(document.getElementById('np-tp'))d.tipo_prenda=gv('np-tp')||null;
+  if(document.getElementById('np-gen'))d.genero_prenda=gv('np-gen');
+  if(document.getElementById('np-pprenda'))d.precio_prenda=gf('np-pprenda');
+  if(tipo==='PTS')d.precio_total=d.precio_prenda||0;
+  else{var c=gf('np-cant');d.precio_total=((d.precio_tela||0)+(d.precio_sublimado||0))*c;}
+  if(tipo==='VT'){
+    d.tela_tipo=gv('np-vtela')||null;d.color_tela=gv('np-vcolor')||null;
+    d.unidad_medida=gv('np-vum');d.precio_total=gf('np-vprecio');
+  }
+  if(tipo==='PI'){d.tela_ancho=parseFloat(gv('np-pian')||'162');d.precio_total=gf('np-piprecio');}
+  if(d.tipo_prenda){var tp=d.tipo_prenda.trim();if(tp)await sb.from('tipos_prenda').upsert({nombre:tp},{onConflict:'nombre'});}
+  var pr=await sb.from('pedidos').insert(d).select().single();
+  if(pr.error){toast('Error: '+pr.error.message,'danger');return;}
+  var pid=pr.data.id;
+  /* Guardar diseños */
+  var drows=document.querySelectorAll('#dis-cont .diseno-row');
+  for(var i=0;i<drows.length;i++){
+    var row=drows[i];
+    var imgEl=row.querySelector('[id^="iurl-"]');var imgUrl=imgEl?imgEl.value:null;
+    var metros=parseFloat(row.querySelector('.dis-m')?row.querySelector('.dis-m').value:0)||0;
+    var obs=row.querySelector('.dis-obs')?row.querySelector('.dis-obs').value:null;
+    var dr2=await sb.from('pedido_disenos').insert({pedido_id:pid,imagen_url:imgUrl,metros_solicitados:metros,observaciones:obs,orden:i+1}).select().single();
+    if(tipo==='PTS'&&dr2.data){
+      var tData=[];
+      row.querySelectorAll('.talla-qty').forEach(function(inp){var q=parseInt(inp.value||0);if(q>0)tData.push({pedido_id:pid,diseno_id:dr2.data.id,talla:inp.dataset.t,cantidad:q});});
+      if(tData.length)await sb.from('pedido_tallas_v2').insert(tData);
+    }
+  }
+  /* Diseños PI */
+  if(tipo==='PI'){
+    var pirows=document.querySelectorAll('#pi-cont .diseno-row');
+    for(var j=0;j<pirows.length;j++){
+      var pr2=pirows[j];
+      var pn=pr2.querySelector('.pi-n')?pr2.querySelector('.pi-n').value:'';
+      var pm=parseFloat(pr2.querySelector('.pi-m')?pr2.querySelector('.pi-m').value:0)||0;
+      if(pn||pm)await sb.from('pedido_disenos').insert({pedido_id:pid,observaciones:pn,metros_solicitados:pm,orden:j+1});
+    }
+  }
+  /* Maquila PTS */
+  if(tipo==='PTS'){
+    var mrows=document.querySelectorAll('#maqs-cont .diseno-row');
+    for(var k=0;k<mrows.length;k++){
+      var mr=mrows[k];
+      var mn=mr.querySelector('.mq-n')?mr.querySelector('.mq-n').value:'';
+      var mp=parseInt(mr.querySelector('.mq-p')?mr.querySelector('.mq-p').value:0)||0;
+      if(mn)await sb.from('pedido_maquila').insert({pedido_id:pid,maquilero_nombre:mn,prendas:mp});
+    }
+  }
+  toast('✅ Pedido '+folio+' creado');
+  cambiarModulo('todos-pedidos');
+}
+/* FIN PARTE 3 */
+/* ============ PARTE 4: PRODUCCIÓN + CLIENTES + USUARIOS + CATÁLOGOS + REPORTES ============ */
+
+/* --- COLA DE IMPRESIÓN (vista especial con diseños) --- */
+async function rImpresion(){
+  var area=document.getElementById('area-modulo');
+  area.innerHTML='<div class="modulo-header"><div><h2>Cola de Impresión</h2><p>Pedidos listos para imprimir</p></div></div>'
+    +'<div id="imp-lista"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  var res=await sb.from('pedidos').select('id,folio,tipo,prioridad,fecha_comprometida,tela_tipo,lado_sublimacion,observaciones,clientes(nombre)')
+    .eq('etapa_actual','Impresión').neq('estado','cancelado').order('prioridad').order('fecha_comprometida');
+  var pedidos=res.data||[];
+  var lista=document.getElementById('imp-lista');if(!lista)return;
+  if(!pedidos.length){lista.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><h3>Cola vacía</h3><p>No hay pedidos en impresión</p></div>';return;}
+  lista.innerHTML='';
+  for(var i=0;i<pedidos.length;i++){
+    var p=pedidos[i];
+    var dr=await sb.from('pedido_disenos').select('*').eq('pedido_id',p.id).order('orden');
+    var dis=dr.data||[];
+    var totM=dis.reduce(function(s,d){return s+(d.metros_solicitados||0);},0);
+    var card=document.createElement('div');card.className='imp-card';
+    var dhtml=dis.map(function(d){
+      return '<div class="imp-dis-row">'
+        +'<div class="imp-dis-img">'+(d.imagen_url?'<img src="'+esc(d.imagen_url)+'" onerror="this.parentElement.innerHTML=\'🖼️\'"/>':'🖼️')+'</div>'
+        +'<div style="flex:1">'
+        +'<div style="font-weight:800;font-size:13px">Diseño #'+d.orden+'</div>'
+        +(d.observaciones?'<div style="font-size:11px;color:var(--text-muted)">'+esc(d.observaciones)+'</div>':'')
+        +'<div style="font-size:13px;margin-top:3px;font-weight:700">'+d.metros_solicitados+' m</div>'
+        +'</div></div>';
+    }).join('');
+    card.innerHTML='<div class="imp-header">'
+      +'<div><div style="font-size:15px;font-weight:800">'+esc(p.folio)+'</div>'
+      +'<div style="font-size:12px;opacity:0.85">'+esc(p.clientes?p.clientes.nombre:'—')+'</div></div>'
+      +'<div>'+cd(p.fecha_comprometida)+'</div></div>'
+      +'<div class="imp-body">'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px;font-size:12px">'
+      +'<div><div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase">Tela</div><strong>'+esc(p.tela_tipo||'—')+'</strong></div>'
+      +'<div><div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase">Lado sublimación</div><strong>'+esc(p.lado_sublimacion||'—')+'</strong></div>'
+      +'<div><div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase">Total metros</div><strong>'+totM.toFixed(1)+' m</strong></div>'
+      +'</div>'
+      +(p.observaciones?'<div class="alert alert-warning" style="margin-bottom:11px">📌 '+esc(p.observaciones)+'</div>':'')
+      +'<div>'+dhtml+'</div>'
+      +'<div style="display:flex;gap:7px;margin-top:13px">'
+      +'<button class="btn btn-success" onclick="abrirCE(\''+p.id+'\',\'Impresión\',\''+p.tipo+'\')">✔️ Completar impresión</button>'
+      +'<button class="btn btn-outline btn-sm" onclick="abrirPanel(\''+p.id+'\')">Ver detalle</button>'
+      +'</div></div>';
+    lista.appendChild(card);
+  }
+}
+
+/* --- COLA PRODUCCIÓN GENÉRICA --- */
+async function rCola(etapa){
+  var area=document.getElementById('area-modulo');
+  area.innerHTML='<div class="modulo-header"><div><h2>'+esc(etapa)+'</h2><p>Pedidos en espera para esta área</p></div></div>'
+    +'<div id="cola-l"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  var res=await sb.from('pedidos').select('id,folio,tipo,estado,prioridad,fecha_comprometida,tela_tipo,unidad_medida,clientes(nombre)')
+    .eq('etapa_actual',etapa).neq('estado','cancelado').order('prioridad').order('fecha_comprometida');
+  var pedidos=res.data||[];
+  var lista=document.getElementById('cola-l');if(!lista)return;
+  if(!pedidos.length){lista.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><h3>Cola vacía</h3><p>No hay pedidos pendientes</p></div>';return;}
+  lista.innerHTML=pedidos.map(function(p){
+    return '<div class="cola-card" onclick="abrirPanel(\''+p.id+'\')">'
+      +'<div class="cola-prioridad p'+(p.prioridad||3)+'"></div>'
+      +'<div style="flex:1">'
+      +'<div style="display:flex;align-items:center;gap:7px">'
+      +'<span class="cola-folio">'+esc(p.folio)+'</span>'
+      +'<span class="tipo-badge tipo-'+p.tipo+'">'+p.tipo+'</span></div>'
+      +'<div class="cola-cliente">'+esc(p.clientes?p.clientes.nombre:'—')+'</div>'
+      +'<div style="display:flex;gap:5px;margin-top:4px">'
+      +(p.tela_tipo?'<span class="cola-chip">🧵 '+esc(p.tela_tipo)+'</span>':'')
+      +(p.unidad_medida?'<span class="cola-chip">'+esc(p.unidad_medida)+'</span>':'')
+      +'</div></div>'
+      +'<div style="text-align:right">'+cd(p.fecha_comprometida)
+      +'<div style="margin-top:5px"><button class="btn btn-success btn-sm" onclick="event.stopPropagation();abrirCE(\''+p.id+'\',\''+esc(etapa)+'\',\''+p.tipo+'\')">✔️ Completar</button></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* --- MAQUILA --- */
+async function rMaquila(){
+  var area=document.getElementById('area-modulo');
+  var res=await sb.from('pedidos').select('id,folio,estado,etapa_actual,clientes(nombre),fecha_comprometida')
+    .eq('tipo','PTS').neq('estado','entregado').neq('estado','cancelado');
+  var pedidos=res.data||[];
+  area.innerHTML='<div class="modulo-header"><div><h2>Maquila</h2><p>Órdenes de confección activas</p></div></div>'
+    +'<div class="card" style="padding:0"><div class="table-wrap">'
+    +(!pedidos.length
+      ?'<div class="empty-state"><div class="empty-icon">🔧</div><h3>Sin pedidos PTS activos</h3></div>'
+      :'<table><thead><tr><th>Folio</th><th>Cliente</th><th>Etapa</th><th>Entrega</th><th>Documentos</th></tr></thead><tbody>'
+      +pedidos.map(function(p){return '<tr onclick="abrirPanel(\''+p.id+'\')">'
+        +'<td><span class="folio-badge">'+esc(p.folio)+'</span></td>'
+        +'<td>'+esc(p.clientes?p.clientes.nombre:'—')+'</td>'
+        +'<td><span class="etapa-chip">'+esc(p.etapa_actual)+'</span></td>'
+        +'<td>'+cd(p.fecha_comprometida)+'</td>'
+        +'<td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();impOC(\''+p.id+'\')">🖨️ Orden confección</button></td>'
+        +'</tr>';}).join('')+'</tbody></table>')
+    +'</div></div>';
+}
+
+/* --- CLIENTES CRUD --- */
+async function rClientes(){
+  var area=document.getElementById('area-modulo');
+  area.innerHTML='<div class="modulo-header"><div><h2>Clientes</h2></div><button class="btn btn-primary" onclick="modalCliente()">➕ Nuevo</button></div>'
+    +'<div class="filtros-bar"><div class="search-box"><span>🔍</span><input type="text" id="fil-cli" placeholder="Buscar..." oninput="filCli()"/></div></div>'
+    +'<div id="grid-cli" class="crud-grid"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  await loadClientes();
+}
+async function loadClientes(){
+  var res=await sb.from('clientes').select('*').eq('activo',true).order('nombre');
+  window._cliList=res.data||[];renderCliGrid(window._cliList);
+}
+function filCli(){
+  var q=(gv('fil-cli')||'').toLowerCase();
+  renderCliGrid((window._cliList||[]).filter(function(c){return c.nombre.toLowerCase().indexOf(q)>=0||(c.empresa||'').toLowerCase().indexOf(q)>=0;}));
+}
+function renderCliGrid(clientes){
+  var g=document.getElementById('grid-cli');if(!g)return;
+  if(!clientes.length){g.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><h3>Sin clientes</h3></div>';return;}
+  g.innerHTML=clientes.map(function(c){
+    return '<div class="crud-card">'
+      +'<div class="crud-avatar">'+ini(c.nombre)+'</div>'
+      +'<div class="crud-nombre">'+esc(c.nombre)+'</div>'
+      +(c.empresa?'<div class="crud-meta">🏢 '+esc(c.empresa)+'</div>':'')
+      +(c.telefono?'<div class="crud-meta">📞 '+esc(c.telefono)+'</div>':'')
+      +(c.email?'<div class="crud-meta">✉️ '+esc(c.email)+'</div>':'')
+      +'<div class="crud-actions">'
+      +'<button class="btn btn-outline btn-sm" onclick="modalCliente('+JSON.stringify(c).replace(/'/g,'&#39;')+')">✏️ Editar</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="delCliente(\''+c.id+'\')">🗑️</button>'
+      +'</div></div>';
+  }).join('');
+}
+function modalCliente(c){
+  var e2=!!(c&&c.id);
+  abrirModal(e2?'Editar cliente':'Nuevo cliente',
+    '<div class="form-grid">'
+    +'<div class="form-group form-full"><label>Nombre *</label><input class="form-control" id="cl-n" value="'+esc(c?c.nombre||'':'')+'"/></div>'
+    +'<div class="form-group form-full"><label>Empresa</label><input class="form-control" id="cl-emp" value="'+esc(c?c.empresa||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Teléfono</label><input class="form-control" id="cl-tel" value="'+esc(c?c.telefono||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Email</label><input type="email" class="form-control" id="cl-em" value="'+esc(c?c.email||'':'')+'"/></div>'
+    +'<div class="form-group form-full"><label>Dirección</label><input class="form-control" id="cl-dir" value="'+esc(c?c.direccion||'':'')+'"/></div>'
+    +'</div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-primary" onclick="saveCliente('+(e2?'\''+c.id+'\'':'null')+')">💾 Guardar</button>');
+}
+async function saveCliente(id){
+  var n=gv('cl-n').trim();if(!n){toast('Nombre obligatorio','warning');return;}
+  var d={nombre:n,empresa:gv('cl-emp')||null,telefono:gv('cl-tel')||null,email:gv('cl-em')||null,direccion:gv('cl-dir')||null};
+  if(id)await sb.from('clientes').update(d).eq('id',id);else await sb.from('clientes').insert(d);
+  toast(id?'Cliente actualizado':'Cliente creado');cerrarModal();
+  if(APP.mod==='clientes')await loadClientes();
+  /* Recargar selector si el form de pedido está abierto */
+  var sel=document.getElementById('np-cli');
+  if(sel){
+    var r=await sb.from('clientes').select('id,nombre,empresa').eq('activo',true).order('nombre');
+    sel.innerHTML='<option value="">— Seleccionar —</option>'
+      +(r.data||[]).map(function(c){return '<option value="'+c.id+'">'+esc(c.nombre)+(c.empresa?' — '+c.empresa:'')+'</option>';}).join('');
+  }
+}
+async function delCliente(id){if(!confirm('¿Desactivar este cliente?'))return;await sb.from('clientes').update({activo:false}).eq('id',id);toast('Cliente desactivado');await loadClientes();}
+
+/* --- USUARIOS CRUD --- */
+async function rUsuarios(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Usuarios</h2><p>Cada usuario configura su PIN la primera vez que entra</p></div><button class="btn btn-primary" onclick="modalUser()">➕ Nuevo</button></div>'
+    +'<div id="grid-usr" class="crud-grid"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  await loadUsers();
+}
+async function loadUsers(){
+  var res=await sb.from('usuarios').select('*').eq('activo',true).order('nombre');
+  var g=document.getElementById('grid-usr');if(!g)return;
+  var us=res.data||[];
+  if(!us.length){g.innerHTML='<div class="empty-state"><div class="empty-icon">👤</div><h3>Sin usuarios</h3></div>';return;}
+  g.innerHTML=us.map(function(u){
+    var esYo=u.id===APP.user.id;
+    return '<div class="crud-card">'
+      +'<div class="crud-avatar" style="background:var(--primary);color:white">'+ini(u.nombre)+'</div>'
+      +'<div class="crud-nombre">'+esc(u.nombre)+'</div>'
+      +'<div style="margin-bottom:5px"><span class="rol-badge">'+esc(u.rol)+'</span></div>'
+      +'<div class="crud-meta">✉️ '+esc(u.email)+'</div>'
+      +'<div class="crud-meta" style="font-size:10px">'+(u.pin_configurado?'🔐 PIN configurado':'⚠️ Sin PIN — se configura al entrar')+'</div>'
+      +'<div class="crud-actions">'
+      +'<button class="btn btn-outline btn-sm" onclick="modalUser('+JSON.stringify(u).replace(/'/g,'&#39;')+')">✏️ Editar</button>'
+      +(!esYo?'<button class="btn btn-warning btn-sm" onclick="resetPin(\''+u.id+'\')">🔑 Reset PIN</button>':'')
+      +(!esYo?'<button class="btn btn-ghost btn-sm" onclick="delUser(\''+u.id+'\')">🗑️</button>':'')
+      +'</div></div>';
+  }).join('');
+}
+function modalUser(u){
+  var e2=!!(u&&u.id);
+  var roles=['director','vendedor','impresor','calandra','corte','costura','almacen','chofer'];
+  abrirModal(e2?'Editar usuario':'Nuevo usuario',
+    '<div class="form-grid">'
+    +'<div class="form-group form-full"><label>Nombre *</label><input class="form-control" id="us-n" value="'+esc(u?u.nombre||'':'')+'"/></div>'
+    +'<div class="form-group form-full"><label>Email *</label><input type="email" class="form-control" id="us-e" value="'+esc(u?u.email||'':'')+'"/></div>'
+    +'<div class="form-group form-full"><label>Rol *</label><select class="form-control" id="us-r">'
+    +roles.map(function(r){return '<option value="'+r+'" '+(u&&u.rol===r?'selected':'')+'>'+r+'</option>';}).join('')+'</select></div>'
+    +(e2?'<div class="form-group form-full"><label>PIN nuevo <small style="font-weight:400;color:var(--text-muted)">(4 dígitos — vacío para no cambiar)</small></label>'
+      +'<input type="text" class="form-control" id="us-pin" maxlength="4" inputmode="numeric" placeholder="1234"/></div>':'')
+    +'</div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-primary" onclick="saveUser('+(e2?'\''+u.id+'\'':'null')+')">💾 Guardar</button>');
+}
+async function saveUser(id){
+  var n=gv('us-n').trim();var e2=gv('us-e').trim();
+  if(!n||!e2){toast('Nombre y email obligatorios','warning');return;}
+  var d={nombre:n,email:e2,rol:gv('us-r')};
+  var pinEl=document.getElementById('us-pin');
+  if(pinEl&&pinEl.value&&pinEl.value.length===4){d.pin=pinEl.value;d.pin_configurado=true;}
+  if(id)await sb.from('usuarios').update(d).eq('id',id);else await sb.from('usuarios').insert(d);
+  toast(id?'Usuario actualizado':'Usuario creado');cerrarModal();await loadUsers();
+}
+async function resetPin(id){
+  if(!confirm('¿Resetear PIN? El usuario lo configurará la próxima vez que entre.'))return;
+  await sb.from('usuarios').update({pin:null,pin_configurado:false}).eq('id',id);
+  toast('PIN reseteado');await loadUsers();
+}
+async function delUser(id){
+  if(!confirm('¿Desactivar este usuario?'))return;
+  await sb.from('usuarios').update({activo:false}).eq('id',id);
+  toast('Usuario desactivado');await loadUsers();
+}
+
+/* --- CATÁLOGO DE DISEÑOS — nombre diferente a renderDisenos --- */
+async function rDis(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Catálogo de Diseños</h2></div><button class="btn btn-primary" onclick="modalDis()">➕ Nuevo</button></div>'
+    +'<div id="dis-cat" class="disenos-grid"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  await loadDis();
+}
+async function loadDis(){
+  var res=await sb.from('disenos').select('*,clientes(nombre)').order('creado_en',{ascending:false});
+  var g=document.getElementById('dis-cat');if(!g)return;
+  var ds=res.data||[];
+  if(!ds.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🎨</div><h3>Sin diseños</h3><p>Agrega el primer diseño</p></div>';return;}
+  g.innerHTML=ds.map(function(d){
+    return '<div class="diseno-card">'
+      +'<div class="diseno-img-box">'+(d.imagen_url?'<img src="'+esc(d.imagen_url)+'" onerror="this.parentElement.innerHTML=\'🎨\'"/>':'🎨')+'</div>'
+      +'<div class="diseno-info">'
+      +(d.sku?'<div class="diseno-sku">SKU: '+esc(d.sku)+'</div>':'')
+      +'<div class="diseno-nombre">'+esc(d.nombre||'Sin nombre')+'</div>'
+      +(d.clientes?'<div style="font-size:10px;color:var(--text-muted)">👥 '+esc(d.clientes.nombre)+'</div>':'')
+      +'<div style="display:flex;gap:5px;margin-top:7px">'
+      +'<button class="btn btn-outline btn-sm" onclick="modalDis('+JSON.stringify(d).replace(/'/g,'&#39;')+')">✏️</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="delDis(\''+d.id+'\')">🗑️</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+function modalDis(d){
+  var e2=!!(d&&d.id);
+  abrirModal(e2?'Editar diseño':'Nuevo diseño',
+    '<div class="form-grid">'
+    +'<div class="form-group"><label>SKU</label><input class="form-control" id="ds-sku" value="'+esc(d?d.sku||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Nombre</label><input class="form-control" id="ds-nom" value="'+esc(d?d.nombre||'':'')+'"/></div>'
+    +'<div class="form-group form-full"><label>Imagen</label>'
+    +'<div style="display:flex;align-items:center;gap:9px">'
+    +(d&&d.imagen_url?'<img src="'+esc(d.imagen_url)+'" style="width:56px;height:56px;border-radius:7px;object-fit:cover"/>':'<div style="font-size:32px">🎨</div>')
+    +'<div><input type="file" id="ds-ifile" accept="image/*" class="file-input-hidden" onchange="upDisCat(this)"/>'
+    +'<button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById(\'ds-ifile\').click()">📷 Subir imagen</button>'
+    +'<input type="hidden" id="ds-iurl" value="'+esc(d?d.imagen_url||'':'')+'"/>'
+    +'<div class="form-hint">Se guarda en Supabase Storage</div></div></div></div>'
+    +'</div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-primary" onclick="saveDis('+(e2?'\''+d.id+'\'':'null')+')">💾 Guardar</button>');
+}
+async function upDisCat(input){
+  var file=input.files[0];if(!file)return;
+  var path='disenos/cat-'+Date.now()+'.'+file.name.split('.').pop();
+  var res=await sb.storage.from('disenos').upload(path,file,{upsert:true});
+  if(res.error){toast('Error al subir','danger');return;}
+  var url=sb.storage.from('disenos').getPublicUrl(path).data.publicUrl;
+  document.getElementById('ds-iurl').value=url;
+  toast('Imagen subida ✅');
+}
+async function saveDis(id){
+  var d={sku:gv('ds-sku')||null,nombre:gv('ds-nom')||null,imagen_url:gv('ds-iurl')||null};
+  if(id)await sb.from('disenos').update(d).eq('id',id);else await sb.from('disenos').insert(d);
+  toast(id?'Diseño actualizado':'Diseño creado');cerrarModal();await loadDis();
+}
+async function delDis(id){if(!confirm('¿Eliminar este diseño?'))return;await sb.from('disenos').delete().eq('id',id);toast('Diseño eliminado');await loadDis();}
+
+/* --- ROLLOS DE PAPEL --- */
+async function rRollos(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Rollos de Papel</h2></div><button class="btn btn-primary" onclick="modalRollo()">➕ Nuevo rollo</button></div>'
+    +'<div id="grid-rollos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px">'
+    +'<div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  await loadRollos();
+}
+async function loadRollos(){
+  var res=await sb.from('rollos_papel').select('*').eq('activo',true).order('creado_en',{ascending:false});
+  var g=document.getElementById('grid-rollos');if(!g)return;
+  var rs=res.data||[];
+  if(!rs.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🧻</div><h3>Sin rollos registrados</h3></div>';return;}
+  g.innerHTML=rs.map(function(r){
+    var pct=r.metros_totales>0?Math.min(100,((r.metros_usados||0)/r.metros_totales)*100):0;
+    var rest=(r.metros_totales||0)-(r.metros_usados||0);
+    var col=pct>80?'var(--danger)':pct>50?'var(--warning)':'var(--primary)';
+    return '<div class="card">'
+      +'<div style="display:flex;align-items:center;gap:11px;margin-bottom:11px">'
+      +'<span style="font-size:26px">🧻</span>'
+      +'<div style="flex:1"><div style="font-weight:800">Rollo '+esc(r.numero_rollo)+'</div>'
+      +'<div style="font-size:11px;color:var(--text-muted)">'+r.ancho_cm+'cm · '+r.metros_totales+'m totales</div></div></div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'
+      +'<div style="font-size:11px;color:var(--text-muted);margin-top:3px">'+rest.toFixed(1)+'m restantes de '+r.metros_totales+'m</div>'
+      +'<div style="display:flex;gap:6px;margin-top:9px">'
+      +'<button class="btn btn-outline btn-sm" onclick="modalRollo('+JSON.stringify(r).replace(/'/g,'&#39;')+')">✏️ Editar</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="delRollo(\''+r.id+'\')">🗑️</button>'
+      +'</div></div>';
+  }).join('');
+}
+function modalRollo(r){
+  var e2=!!(r&&r.id);
+  abrirModal(e2?'Editar rollo':'Nuevo rollo de papel',
+    '<div class="form-grid">'
+    +'<div class="form-group"><label>Número *</label><input class="form-control" id="rl-n" value="'+esc(r?r.numero_rollo||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Ancho</label><select class="form-control" id="rl-a">'
+    +'<option value="162" '+(r&&r.ancho_cm==162?'selected':'')+'>162 cm</option>'
+    +'<option value="182" '+(r&&r.ancho_cm==182?'selected':'')+'>182 cm</option></select></div>'
+    +'<div class="form-group"><label>Metros totales</label><input type="number" class="form-control" id="rl-mt" value="'+esc(r?r.metros_totales||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Metros usados</label><input type="number" class="form-control" id="rl-mu" value="'+esc(r?r.metros_usados||0:0)+'"/></div>'
+    +'</div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-primary" onclick="saveRollo('+(e2?'\''+r.id+'\'':'null')+')">💾 Guardar</button>');
+}
+async function saveRollo(id){
+  var d={numero_rollo:gv('rl-n'),ancho_cm:parseFloat(gv('rl-a')),metros_totales:parseFloat(gv('rl-mt')||0),metros_usados:parseFloat(gv('rl-mu')||0)};
+  if(id)await sb.from('rollos_papel').update(d).eq('id',id);else await sb.from('rollos_papel').insert(d);
+  toast(id?'Rollo actualizado':'Rollo registrado');cerrarModal();await loadRollos();
+}
+async function delRollo(id){if(!confirm('¿Desactivar este rollo?'))return;await sb.from('rollos_papel').update({activo:false}).eq('id',id);await loadRollos();}
+
+/* --- CONFIG CALANDRA --- */
+async function rCfgCal(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Config Calandra</h2><p>Velocidades por tipo de tela</p></div><button class="btn btn-primary" onclick="modalCal()">➕ Agregar</button></div>'
+    +'<div class="cal-banner"><div class="cal-temp">205°C</div><div><div style="font-size:14px;font-weight:700">Temperatura fija</div><div style="font-size:12px;opacity:0.85">Solo configuras la velocidad por tipo de tela</div></div></div>'
+    +'<div id="cfg-cal"><div class="loading"><span class="spinner"></span>Cargando...</div></div>';
+  await loadCal();
+}
+async function loadCal(){
+  var res=await sb.from('config_calandria').select('*').eq('activo',true).order('tela_tipo');
+  var el=document.getElementById('cfg-cal');if(!el)return;
+  var cs=res.data||[];
+  if(!cs.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">⚙️</div><h3>Sin configuraciones</h3></div>';return;}
+  el.innerHTML='<div class="card" style="padding:0"><table><thead><tr><th>Tipo tela</th><th>Velocidad (m/h)</th><th>Temperatura</th><th>Notas</th><th></th></tr></thead><tbody>'
+    +cs.map(function(c){
+      return '<tr>'
+        +'<td><strong>'+esc(c.tela_tipo)+'</strong></td>'
+        +'<td><strong>'+c.velocidad_mh+' m/h</strong></td>'
+        +'<td>🌡️ <strong>205°C</strong></td>'
+        +'<td>'+esc(c.notas||'—')+'</td>'
+        +'<td><div style="display:flex;gap:5px">'
+        +'<button class="btn btn-outline btn-sm" onclick="modalCal('+JSON.stringify(c).replace(/'/g,'&#39;')+')">✏️</button>'
+        +'<button class="btn btn-ghost btn-sm" onclick="delCal(\''+c.id+'\')">🗑️</button>'
+        +'</div></td></tr>';
+    }).join('')
+    +'</tbody></table></div>';
+}
+function modalCal(c){
+  var e2=!!(c&&c.id);
+  abrirModal(e2?'Editar configuración':'Nueva configuración calandra',
+    '<div class="alert alert-info">🌡️ Temperatura siempre <strong>205°C</strong> — no cambia nunca</div>'
+    +'<div class="form-group"><label>Tipo de tela *</label><input class="form-control" id="cc-t" value="'+esc(c?c.tela_tipo||'':'')+'"/></div>'
+    +'<div class="form-group"><label>Velocidad (m/h)</label><input type="number" class="form-control" id="cc-v" value="'+(c?c.velocidad_mh||220:220)+'"/></div>'
+    +'<div class="form-group"><label>Notas</label><textarea class="form-control" id="cc-n">'+esc(c?c.notas||'':'')+'</textarea></div>',
+    '<button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>'
+    +'<button class="btn btn-primary" onclick="saveCal('+(e2?'\''+c.id+'\'':'null')+')">💾 Guardar</button>');
+}
+async function saveCal(id){
+  var t=gv('cc-t').trim();if(!t){toast('Indica el tipo de tela','warning');return;}
+  var d={tela_tipo:t,velocidad_mh:parseFloat(gv('cc-v')||220),notas:gv('cc-n')||null};
+  if(id)await sb.from('config_calandria').update(d).eq('id',id);
+  else{await sb.from('config_calandria').insert(d);await sb.from('tipos_tela').upsert({nombre:t},{onConflict:'nombre'});}
+  toast('Guardado');cerrarModal();await loadCal();
+}
+async function delCal(id){if(!confirm('¿Eliminar?'))return;await sb.from('config_calandria').update({activo:false}).eq('id',id);await loadCal();}
+
+/* --- SEGUIMIENTO --- */
+function rSeg(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Seguimiento</h2><p>Consulta el estado de cualquier pedido</p></div></div>'
+    +'<div class="card" style="max-width:560px">'
+    +'<div class="form-group"><label>Buscar por folio</label>'
+    +'<div style="display:flex;gap:9px">'
+    +'<input class="form-control" id="seg-q" placeholder="IJ-SUB-0001" style="flex:1"/>'
+    +'<button class="btn btn-primary" onclick="buscarSeg()">🔍 Buscar</button>'
+    +'</div></div></div>'
+    +'<div id="seg-r"></div>';
+  document.getElementById('seg-q').addEventListener('keydown',function(e){if(e.key==='Enter')buscarSeg();});
+}
+async function buscarSeg(){
+  var q=(gv('seg-q')||'').trim().toUpperCase();if(!q)return;
+  var el=document.getElementById('seg-r');
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Buscando...</div>';
+  var res=await sb.from('pedidos').select('*,clientes(nombre)').ilike('folio','%'+q+'%').limit(5);
+  var ps=res.data||[];
+  if(!ps.length){el.innerHTML='<div class="card" style="max-width:560px;margin-top:13px"><div class="empty-state"><div class="empty-icon">🔍</div><h3>No encontrado</h3><p>Verifica el folio e intenta de nuevo</p></div></div>';return;}
+  el.innerHTML=ps.map(function(p){
+    var ruta=RUTAS[p.tipo]||[];var idx=ruta.indexOf(p.etapa_actual);
+    var pct=ruta.length>1?Math.round((idx/(ruta.length-1))*100):0;
+    return '<div class="card" style="max-width:560px;margin-top:13px;cursor:pointer" onclick="abrirPanel(\''+p.id+'\')">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">'
+      +'<span class="folio-badge" style="font-size:14px">'+esc(p.folio)+'</span>'
+      +'<span class="estado-badge estado-'+p.estado+'">'+p.estado.replace('_',' ')+'</span></div>'
+      +'<div class="info-grid" style="margin-bottom:13px">'
+      +'<div class="info-item"><label>Cliente</label><span>'+esc(p.clientes?p.clientes.nombre:'—')+'</span></div>'
+      +'<div class="info-item"><label>Etapa</label><span>'+esc(p.etapa_actual)+'</span></div>'
+      +'<div class="info-item"><label>Entrega</label><span>'+ff(p.fecha_comprometida)+'</span></div>'
+      +'<div class="info-item"><label>Días</label><span>'+cd(p.fecha_comprometida)+'</span></div>'
+      +'</div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px">Progreso: '+pct+'%</div>'
+      +'<div class="progress-bar" style="height:9px"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+      +'</div>';
+  }).join('');
+}
+
+/* --- REPORTES --- */
+async function rRep(){
+  var res=await Promise.all([
+    sb.from('pedidos').select('tipo,estado,precio_total').neq('estado','cancelado'),
+    sb.from('pedidos').select('tipo,precio_total').eq('estado','entregado')
+  ]);
+  var todos=res[0].data||[];var ents=res[1].data||[];
+  var totalF=ents.reduce(function(s,p){return s+(p.precio_total||0);},0);
+  var pT={};todos.forEach(function(p){pT[p.tipo]=(pT[p.tipo]||0)+1;});
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Reportes</h2></div></div>'
+    +'<div class="metrics-grid" style="grid-template-columns:repeat(3,1fr)">'
+    +'<div class="metric-card" onclick="detMetrica(\'entregados\')"><div class="metric-icon green">💰</div>'
+    +'<div class="metric-value">$'+totalF.toLocaleString('es-MX',{minimumFractionDigits:0})+'</div>'
+    +'<div class="metric-label">Facturado total</div></div>'
+    +'<div class="metric-card" onclick="detMetrica(\'activos\')"><div class="metric-icon blue">📦</div>'
+    +'<div class="metric-value">'+todos.length+'</div><div class="metric-label">Pedidos totales</div></div>'
+    +'<div class="metric-card" onclick="detMetrica(\'entregados\')"><div class="metric-icon orange">✅</div>'
+    +'<div class="metric-value">'+ents.length+'</div><div class="metric-label">Entregados</div></div>'
+    +'</div>'
+    +'<div class="card"><div class="section-title">📊 Pedidos por tipo</div>'
+    +'<div style="display:flex;gap:11px;flex-wrap:wrap">'
+    +Object.entries(pT).map(function(e){
+      return '<div style="text-align:center;padding:13px 20px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="detMetrica(\'activos\')">'
+        +'<div style="font-size:24px;font-weight:800;color:var(--primary)">'+e[1]+'</div>'
+        +'<span class="tipo-badge tipo-'+e[0]+'">'+e[0]+'</span>'
+        +'<div style="font-size:10px;color:var(--text-muted);margin-top:2px">'+TIPOS[e[0]]+'</div></div>';
+    }).join('')
+    +'</div></div>';
+}
+
+/* --- FASE 2 placeholder --- */
+function rFase2(){
+  document.getElementById('area-modulo').innerHTML='<div class="modulo-header"><div><h2>Marketplace</h2></div></div>'
+    +'<div class="card"><div class="alert alert-warning">👕 Módulo Marketplace completo disponible en Fase 2</div>'
+    +'<p style="color:var(--text-muted);font-size:13px;margin-top:10px">Incluirá: inventario en liso con semáforo, picking list, importador CSV de SKUs y gestión de marketplaces.</p></div>';
+}
+/* FIN PARTE 4 */
+/* ============ PARTE 5: DOCUMENTOS IMPRIMIBLES + INIT ============ */
+
+/* Helper — abre ventana de impresión SIN template literals con etiquetas HTML */
+function abrirVentanaImp(contenido){
+  var css='body{font-family:Arial,sans-serif;margin:20px;color:#1F2917;font-size:13px}'
+    +'table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}'
+    +'th{background:#5C6B3A;color:white;padding:5px 8px;text-align:left}'
+    +'td{padding:5px 8px;border-bottom:1px solid #ddd}'
+    +'.logo{display:inline-flex;width:40px;height:40px;background:#5C6B3A;border-radius:7px;'
+    +'align-items:center;justify-content:center;color:white;font-weight:800;font-size:15px;'
+    +'vertical-align:middle;margin-right:9px}'
+    +'.firmas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:36px}'
+    +'.firma{border-top:2px solid #333;padding-top:7px;text-align:center;font-size:11px;color:#666}'
+    +'@media print{.noprint{display:none}}';
+  var win=window.open('','_blank');
+  win.document.open();
+  win.document.write('<!DOCTYPE html>');
+  win.document.write('<html lang="es">');
+  win.document.write('<head>');
+  win.document.write('<meta charset="UTF-8">');
+  win.document.write('<style>');
+  win.document.write(css);
+  win.document.write('</style>');
+  win.document.write('</head>');
+  win.document.write('<body>');
+  win.document.write(contenido);
+  win.document.write('<div class="noprint" style="margin-top:22px;text-align:center">');
+  win.document.write('<button onclick="window.print()" style="padding:9px 28px;background:#5C6B3A;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer">&#128424; Imprimir</button>');
+  win.document.write('</div>');
+  win.document.write('</body>');
+  win.document.write('</html>');
+  win.document.close();
+}
+
+/* --- HOJA VIAJERA --- */
+async function impHV(pid){
+  var res=await sb.from('pedidos').select('*,clientes(*),usuarios(nombre)').eq('id',pid).single();
+  var p=res.data;
+  var eR=await sb.from('etapas_pedido').select('*,usuarios(nombre)').eq('pedido_id',pid).order('creado_en');
+  var rR=await sb.from('packing_list_rollos').select('*').eq('pedido_id',pid);
+  var ruta=RUTAS[p.tipo]||[];var ets=eR.data||[];var rollos=rR.data||[];
+  var h='';
+  h+='<div style="display:flex;align-items:center;border-bottom:3px solid #5C6B3A;padding-bottom:11px;margin-bottom:14px">';
+  h+='<span class="logo">IJ</span>';
+  h+='<div>';
+  h+='<div style="font-size:10px;color:#666">Importaciones Juanita · Toluca, Edo. Méx.</div>';
+  h+='<div style="font-size:20px;font-weight:800;color:#C0392B">'+esc(p.folio)+'</div>';
+  h+='</div>';
+  h+='<div style="margin-left:auto;text-align:right"><strong>HOJA VIAJERA</strong><br/>'+new Date().toLocaleDateString('es-MX')+'</div>';
+  h+='</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;font-size:12px">';
+  h+='<div><small style="color:#666;text-transform:uppercase">Cliente</small><br/><strong>'+esc(p.clientes?p.clientes.nombre:'—')+'</strong></div>';
+  h+='<div><small style="color:#666;text-transform:uppercase">Tipo</small><br/><strong>'+p.tipo+' — '+esc(TIPOS[p.tipo])+'</strong></div>';
+  h+='<div><small style="color:#666;text-transform:uppercase">Tela</small><br/><strong>'+esc(p.tela_tipo||'—')+'</strong></div>';
+  h+='<div><small style="color:#666;text-transform:uppercase">Lado sublimación</small><br/><strong>'+esc(p.lado_sublimacion||'—')+'</strong></div>';
+  h+='<div><small style="color:#666;text-transform:uppercase">Entrega</small><br/><strong>'+esc(p.fecha_comprometida||'—')+'</strong></div>';
+  h+='<div><small style="color:#666;text-transform:uppercase">Etapa actual</small><br/><strong>'+esc(p.etapa_actual)+'</strong></div>';
+  h+='</div>';
+  if(p.observaciones){
+    h+='<div style="background:#f5f6f2;padding:8px;border-radius:5px;margin-bottom:11px;font-size:12px">';
+    h+='<strong>Observaciones:</strong> '+esc(p.observaciones);
+    h+='</div>';
+  }
+  if(rollos.length){
+    h+='<strong>Packing List — Rollos recibidos:</strong>';
+    h+='<table><thead><tr><th>#Rollo</th><th>Metros reales</th><th>Ancho (cm)</th><th>Lote</th></tr></thead><tbody>';
+    rollos.forEach(function(r){
+      h+='<tr><td>'+r.numero_rollo+'</td><td>'+r.metros_reales+' m</td><td>'+r.ancho_cm+'</td><td>'+esc(r.lote_entrada||'—')+'</td></tr>';
+    });
+    h+='</tbody></table>';
+  }
+  h+='<strong>Ruta de producción:</strong>';
+  h+='<table><thead><tr><th>Etapa</th><th>Estado</th><th>Completó</th><th>Fecha</th></tr></thead><tbody>';
+  ruta.forEach(function(etapa){
+    var c=ets.find(function(et){return et.etapa===etapa;});
+    h+='<tr>';
+    h+='<td>'+esc(etapa)+'</td>';
+    h+='<td style="color:'+(c?'#5C6B3A':'#999')+';font-weight:700">'+(c?'✓ Completada':'Pendiente')+'</td>';
+    h+='<td>'+esc(c?(c.usuarios?c.usuarios.nombre:'—'):'—')+'</td>';
+    h+='<td>'+esc(c?new Date(c.completado_en).toLocaleDateString('es-MX'):'—')+'</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  h+='<div class="firmas">';
+  h+='<div class="firma">Entregué conforme<br/><br/><br/>Nombre y firma</div>';
+  h+='<div class="firma">Recibí conforme<br/><br/><br/>Nombre y firma</div>';
+  h+='<div class="firma">Autorizado por<br/><br/><br/>Jonathan Zarur / Director</div>';
+  h+='</div>';
+  abrirVentanaImp(h);
+}
+
+/* --- ORDEN DE CONFECCIÓN --- */
+async function impOC(pid){
+  var res=await sb.from('pedidos').select('*,clientes(*)').eq('id',pid).single();
+  var p=res.data;
+  var dR=await sb.from('pedido_disenos').select('*').eq('pedido_id',pid).order('orden');
+  var tR=await sb.from('pedido_tallas_v2').select('*').eq('pedido_id',pid);
+  var dis=dR.data||[];var tallas=tR.data||[];
+  var tusadas=[...new Set(tallas.map(function(t){return t.talla;}))];
+  var h='';
+  h+='<div style="background:#5C6B3A;color:white;padding:11px 16px;border-radius:5px;margin-bottom:14px">';
+  h+='<strong style="font-size:15px">ORDEN DE CONFECCIÓN — '+esc(p.folio)+'</strong>';
+  h+='</div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px;font-size:11px">';
+  h+='<div><small style="color:#666">Fecha</small><br/><strong>'+new Date().toLocaleDateString('es-MX')+'</strong></div>';
+  h+='<div><small style="color:#666">Cliente</small><br/><strong>'+esc(p.clientes?p.clientes.nombre:'—')+'</strong></div>';
+  h+='<div><small style="color:#666">Tela</small><br/><strong>'+esc(p.tela_tipo||'—')+'</strong></div>';
+  h+='<div><small style="color:#666">Entrega</small><br/><strong>'+esc(p.fecha_comprometida||'—')+'</strong></div>';
+  h+='</div>';
+  if(p.tipo_prenda||p.genero_prenda){
+    h+='<div style="margin-bottom:11px;font-size:12px">';
+    if(p.tipo_prenda)h+='<strong>Prenda:</strong> '+esc(p.tipo_prenda)+' &nbsp; ';
+    if(p.genero_prenda)h+='<strong>Género:</strong> '+esc(p.genero_prenda);
+    h+='</div>';
+  }
+  /* Tabla de tallas */
+  h+='<table><thead><tr><th style="text-align:left">Diseño</th>';
+  tusadas.forEach(function(t){h+='<th style="text-align:center">'+t+'</th>';});
+  h+='<th style="text-align:center">TOTAL</th></tr></thead><tbody>';
+  dis.forEach(function(d,i){
+    var dt=tallas.filter(function(t){return t.diseno_id===d.id;});
+    var mp={};dt.forEach(function(t){mp[t.talla]=t.cantidad;});
+    var tot=dt.reduce(function(s,t){return s+t.cantidad;},0);
+    h+='<tr><td>Diseño '+(i+1)+'</td>';
+    tusadas.forEach(function(t){h+='<td style="text-align:center">'+(mp[t]||0)+'</td>';});
+    h+='<td style="text-align:center"><strong>'+tot+'</strong></td></tr>';
+  });
+  var grand=tallas.reduce(function(s,t){return s+t.cantidad;},0);
+  h+='<tr style="background:#f0f0f0;font-weight:700"><td>TOTALES</td>';
+  tusadas.forEach(function(t){
+    h+='<td style="text-align:center">'+tallas.filter(function(tl){return tl.talla===t;}).reduce(function(s,tl){return s+tl.cantidad;},0)+'</td>';
+  });
+  h+='<td style="text-align:center">'+grand+'</td></tr></tbody></table>';
+  /* Entrega de insumos */
+  h+='<br/><strong>Entrega de insumos:</strong>';
+  h+='<table><thead><tr><th>Material</th><th>Cantidad</th><th>Recibí conforme</th></tr></thead><tbody>';
+  h+='<tr><td>Prendas en liso</td><td></td><td></td></tr>';
+  h+='<tr><td>Tela sublimada</td><td></td><td></td></tr>';
+  h+='<tr><td>Insumos adicionales</td><td></td><td></td></tr>';
+  h+='</tbody></table>';
+  h+='<div class="firmas">';
+  h+='<div class="firma">Entregué<br/><br/><br/>IJ / Producción</div>';
+  h+='<div class="firma">Recibí<br/><br/><br/>Maquilero</div>';
+  h+='<div class="firma">Autorizado<br/><br/><br/>Jonathan Zarur</div>';
+  h+='</div>';
+  abrirVentanaImp(h);
+}
+
+/* ============ INIT ============ */
+function init(){
+  cargarUsrs();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
